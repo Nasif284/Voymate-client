@@ -13,7 +13,7 @@ export default function AddBuddyCard() {
             <line x1="22" y1="11" x2="16" y2="11" />
           </svg>
         </div>
-        <h3 className="text-xs sm:text-base font-bold text-[#181d1a] font-headline">Add New Buddy</h3>
+        <h3 className="text-xs sm:text-base font-bold text-[#181d1a] font-headline">Add New Mate</h3>
         <p className="text-[9px] sm:text-xs text-[#3f4944] mt-0.5 sm:mt-1 max-w-[120px] sm:max-w-[180px]">
           Find new travel partners.
         </p>

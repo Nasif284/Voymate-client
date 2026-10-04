@@ -11,7 +11,7 @@ export default function BuddyRequestsPage() {
       {/* Header */}
       <div className="flex items-center justify-between mb-4 sm:mb-6 flex-wrap gap-2">
         <h2 className="text-base sm:text-2xl font-extrabold text-[#005440] font-headline flex items-center gap-2">
-          Buddy requests
+          Mate requests
         </h2>
 
         {/* Sub Tabs */}

@@ -4,7 +4,7 @@ import Providers from "./provider";
 import { Toaster } from "sonner";
 export const metadata: Metadata = {
   title: "Voymate",
-  description: "Connect with travelers and find travel buddies.",
+  description: "Connect with travelers and find travel mates.",
   applicationName: "Voymate",
   appleWebApp: {
     capable: true,

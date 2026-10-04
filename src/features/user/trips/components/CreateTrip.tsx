@@ -38,7 +38,7 @@ export default function CreateTrip({ onClose }: Readonly<{ onClose: () => void }
       isPending={tripPlan.isPending}
       submitButtonText={
         <>
-          Create my plan &amp; find buddies
+          Create my plan &amp; find mates
           {arrowForward}
         </>
       }

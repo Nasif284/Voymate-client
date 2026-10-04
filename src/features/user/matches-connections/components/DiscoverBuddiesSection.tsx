@@ -68,7 +68,7 @@ export default function DiscoverBuddiesSection({
             </div>
             <h2 className="text-xl sm:text-2xl md:text-3xl font-black text-[#181d1a] tracking-tight font-headline">
               {isOnlySection
-                ? "Travelers Looking for Buddies"
+                ? "Travelers Looking for Mates"
                 : "Explore More Travel Companions"}
             </h2>
           </div>

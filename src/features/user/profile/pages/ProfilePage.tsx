@@ -249,7 +249,7 @@ export default function ProfileManagement() {
           {/* <div className="grid grid-cols-3 sm:grid-cols-3 items-center justify-center gap-5">
             {[
               { label: "Trips", value: "6" },
-              { label: "Buddies", value: "9", star:false },
+              { label: "Mates", value: "9", star:false },
               { label: "Active Trips", value: "3" },
             ].map((stat) => (
               <div key={stat.label} className={`bg-white p-5 rounded-2xl border border-[#bec9c3]/15 flex flex-col items-center text-center ${stat.star ? "border-b-4 border-b-[#005440]" : ""}`}>
@@ -288,7 +288,7 @@ export default function ProfileManagement() {
                       }))
                     }
                     readOnly={!editingBio}
-                    placeholder="Tell the world about your travel style, favorite destinations, and what makes you a great buddy..."
+                    placeholder="Tell the world about your travel style, favorite destinations, and what makes you a great mate..."
                     className={`w-full bg-transparent border-none focus:ring-0 outline-none leading-relaxed resize-none p-0 h-28 sm:h-32 text-xs sm:text-sm ${editingBio ? "text-[#181d1a]" : "text-[#3f4944] cursor-default"}`}
                   />
                 </div>
@@ -393,7 +393,7 @@ export default function ProfileManagement() {
                     </div>
                     <h4 className="font-black text-lg font-headline">Trust Level: Gold</h4>
                   </div>
-                  <p className="text-white/80 text-sm leading-relaxed mb-6">Your identity, phone, and email are fully verified. This badge helps you match with top-rated buddies.</p>
+                  <p className="text-white/80 text-sm leading-relaxed mb-6">Your identity, phone, and email are fully verified. This badge helps you match with top-rated mates.</p>
                   <button className="w-full py-2.5 rounded-xl bg-white text-[#005440] font-bold text-xs hover:bg-opacity-90 transition-all">Manage Verification</button>
                 </div>
                 <svg viewBox="0 0 24 24" className="absolute -bottom-10 -right-10 w-[200px] h-[200px] fill-current text-white/5 pointer-events-none rotate-12">

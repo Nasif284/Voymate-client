@@ -43,7 +43,7 @@ const IncomingRequestsListing = () => {
           <path d="M22 2L15 22l-4-9-9-4 20-7z" />
         </svg>
         <p className="font-headline font-bold text-base sm:text-lg opacity-60">No connection requests</p>
-        <p className="text-xs sm:text-sm opacity-40 mt-1">Your incoming buddy requests will appear here.</p>
+        <p className="text-xs sm:text-sm opacity-40 mt-1">Your incoming mate requests will appear here.</p>
       </div>
     );
   }

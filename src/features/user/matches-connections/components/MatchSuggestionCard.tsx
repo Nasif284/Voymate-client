@@ -119,7 +119,7 @@ export default function MatchSuggestionCard({
           {isConnected ? (
             <div className="absolute top-1.5 left-1.5 sm:top-3 sm:left-3 bg-[#005440]/90 text-white text-[8px] sm:text-[11px] font-bold px-1.5 py-0.5 sm:px-2.5 sm:py-1 rounded-full backdrop-blur-md shadow-xs flex items-center gap-1 z-10">
               <UserCheck className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-white shrink-0" />
-              <span className="truncate">Connected Buddy</span>
+              <span className="truncate">Connected Mate</span>
             </div>
           ) : isRequestReceived ? (
             <div className="absolute top-1.5 left-1.5 sm:top-3 sm:left-3 bg-[#004736]/90 text-[#a0f3d4] text-[8px] sm:text-[11px] font-bold px-1.5 py-0.5 sm:px-2.5 sm:py-1 rounded-full backdrop-blur-md shadow-xs flex items-center gap-1 z-10 border border-[#a0f3d4]/30">

@@ -16,7 +16,7 @@ export default function AuthPage({
           {/* Mobile Header branding */}
           <div className="lg:hidden text-center mb-8">
             <h1 className="text-3xl font-black text-[#0f6e56] font-headline tracking-tight">Voymate</h1>
-            <p className="text-sm text-[#3f4944] mt-1 font-medium">Connect with travelers & find travel buddies</p>
+            <p className="text-sm text-[#3f4944] mt-1 font-medium">Connect with travelers & find travel mates</p>
           </div>
 
           <AuthTabs />

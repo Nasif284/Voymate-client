@@ -35,7 +35,7 @@ export default function TravelPlanPage() {
             Where are you headed?
           </h1>
           <p className="text-[#3f4944] leading-relaxed text-sm sm:text-base">
-            Your travel plan is shown to potential travel buddies.
+            Your travel plan is shown to potential travel mates.
           </p>
         </div>
 

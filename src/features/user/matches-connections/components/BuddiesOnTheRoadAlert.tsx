@@ -46,10 +46,10 @@ export default function BuddiesOnTheRoadAlert({
           <div>
             <div className="flex items-center gap-2">
               <h2 className="text-base sm:text-xl font-black font-headline tracking-tight text-white">
-                Buddies On The Road
+                Mates On The Road
               </h2>
               <span className="px-2 py-0.5 rounded-full text-[10px] sm:text-xs font-bold bg-[#a0f3d4] text-[#004736]">
-                {buddies.length} {buddies.length === 1 ? "Buddy" : "Buddies"}
+                {buddies.length} {buddies.length === 1 ? "Mate" : "Mates"}
               </span>
             </div>
             <p className="text-[11px] sm:text-xs text-white/80 mt-0.5">
@@ -59,7 +59,7 @@ export default function BuddiesOnTheRoadAlert({
         </div>
       </div>
 
-      {/* Buddies Cards Grid / Horizontal Scroll */}
+      {/* Mates Cards Grid / Horizontal Scroll */}
       <div className="relative z-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
         {buddies.map((buddy) => {
           const traveler = buddy.user;

@@ -140,7 +140,7 @@ export default function SettingsPage() {
 
                   {/* Allow requests from */}
                   <div>
-                    <label className="block text-xs font-bold text-[#3f4944] mb-2 px-1">Allow buddy requests from</label>
+                    <label className="block text-xs font-bold text-[#3f4944] mb-2 px-1">Allow mate requests from</label>
                     <div className="relative">
                       <select
                         value={settings.requestsFromCode}

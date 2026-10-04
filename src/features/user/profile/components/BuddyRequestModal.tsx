@@ -29,7 +29,7 @@ export function BuddyRequestModal({ isOpen, onClose, onSend, user }: BuddyReques
       <div className="w-full max-w-md bg-[#f7faf6] rounded-3xl overflow-hidden shadow-2xl border border-[#bec9c3]/30 animate-in zoom-in-95 duration-200">
         {/* Header */}
         <div className="flex items-center justify-between p-6 sm:p-8 pb-4">
-          <h2 className="text-2xl font-extrabold text-[#005440] font-headline tracking-tight">Send Buddy Request</h2>
+          <h2 className="text-2xl font-extrabold text-[#005440] font-headline tracking-tight">Send Mate Request</h2>
 
           <button
             onClick={onClose}
@@ -61,7 +61,7 @@ export function BuddyRequestModal({ isOpen, onClose, onSend, user }: BuddyReques
             rows={4}
             value={message}
             onChange={(e) => setMessage(e.target.value)}
-            placeholder={`Hi ${user.name.split(" ")[0]}! I came across your profile and would love to connect as a travel buddy...`}
+            placeholder={`Hi ${user.name.split(" ")[0]}! I came across your profile and would love to connect as a travel mate...`}
             className="w-full rounded-2xl bg-[#e0e3e0]/60 p-4 text-sm font-medium text-[#181d1a] placeholder:text-[#6f7a74] resize-none outline-none border border-transparent focus:border-[#005440] focus:bg-white focus:ring-2 focus:ring-[#005440]/20 transition-all"
           />
         </div>

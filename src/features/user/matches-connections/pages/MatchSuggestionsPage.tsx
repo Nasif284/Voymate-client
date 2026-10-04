@@ -480,7 +480,7 @@ export default function TripMatchesPage() {
                   ? `We couldn't find any trips matching "${
                       appliedSearch.destinationName || "your selected criteria"
                     }". Try searching for a broader location or relaxing your filters.`
-                  : "No travelers have listed upcoming trips yet. Start an adventure by creating a trip and inviting travel buddies to join you!"}
+                  : "No travelers have listed upcoming trips yet. Start an adventure by creating a trip and inviting travel mates to join you!"}
               </p>
 
               <div className="mt-6 flex flex-wrap items-center justify-center gap-3">

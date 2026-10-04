@@ -117,7 +117,7 @@ export default function NearbyProfile() {
                     </span>
                   </div>
                   <h3 className="text-sm sm:text-base md:text-lg font-black text-white mt-1">
-                    {user.fullName.split(" ")[0]} is looking for buddies for an upcoming trip to {featuredTrip.destination.name.split(",")[0]}!
+                    {user.fullName.split(" ")[0]} is looking for mates for an upcoming trip to {featuredTrip.destination.name.split(",")[0]}!
                   </h3>
                   <p className="text-[11px] sm:text-xs text-white/80 mt-0.5">
                     Would you like to travel together? Reach out directly and coordinate your journey.
@@ -150,7 +150,7 @@ export default function NearbyProfile() {
                 {isConnected && (
                   <span className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-2 bg-white/90 backdrop-blur-md text-[#005440] rounded-xl text-xs sm:text-sm font-bold shadow-md">
                     <Users className="w-3.5 h-3.5 text-[#005440] shrink-0" />
-                    <span>Connected Buddy</span>
+                    <span>Connected Mate</span>
                   </span>
                 )}
 

@@ -42,11 +42,11 @@ export default function BuddiesUpcomingTrips() {
               <Luggage className="w-4 h-4 sm:w-5 sm:h-5 text-[#005440]" />
             </div>
             <h2 className="text-xl sm:text-2xl md:text-3xl font-black text-[#181d1a] tracking-tight font-headline">
-              Where Your Buddies Are Heading
+              Where Your Mates Are Heading
             </h2>
           </div>
           <p className="text-[#3f4944] text-xs sm:text-sm md:text-base">
-            Connected travel buddies planning trips soon. See where they are going and coordinate plans together.
+            Connected travel mates planning trips soon. See where they are going and coordinate plans together.
           </p>
         </div>
       </header>

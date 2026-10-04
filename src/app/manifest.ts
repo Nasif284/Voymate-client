@@ -4,7 +4,7 @@ export default function manifest(): MetadataRoute.Manifest {
   return {
     name: "Voymate",
     short_name: "Voymate",
-    description: "Connect with travelers, find travel buddies and explore together.",
+    description: "Connect with travelers, find travel mates and explore together.",
     start_url: "/",
     display: "standalone",
     background_color: "#ffffff",

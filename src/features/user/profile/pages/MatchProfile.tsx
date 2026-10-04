@@ -106,7 +106,7 @@ export default function MatchProfile() {
                   <>
                     <span className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-2 bg-white/90 backdrop-blur-md text-[#005440] rounded-xl text-xs sm:text-sm font-bold shadow-md">
                       <Users className="w-3.5 h-3.5 text-[#005440] shrink-0" />
-                      <span>Connected Buddy</span>
+                      <span>Connected Mate</span>
                     </span>
                     <MessageButton
                       userId={user.id}
@@ -175,7 +175,7 @@ export default function MatchProfile() {
                       className="px-4 py-2 sm:px-5 sm:py-2.5 bg-[#005440] text-white rounded-xl text-xs sm:text-sm font-bold flex items-center gap-2 shadow-md hover:bg-[#003e2f] active:scale-95 transition-all cursor-pointer"
                     >
                       <PersonAddIcon />
-                      <span>Send Buddy Request</span>
+                      <span>Send Mate Request</span>
                     </button>
                   </>
                 )}
@@ -496,7 +496,7 @@ export default function MatchProfile() {
                 Connect with {firstName}
               </p>
               <p className="text-[11px] text-[#c9eadb] truncate">
-                {match?.totalPoints ? `${match.totalPoints}% Match compatibility` : "Start a travel buddy request"}
+                {match?.totalPoints ? `${match.totalPoints}% Match compatibility` : "Start a travel mate request"}
               </p>
             </div>
           </div>
