@@ -1,0 +1,36 @@
+import { usersServices } from "@/src/features/user/matches-connections/services/users.service";
+import { useQuery } from "@tanstack/react-query";
+
+export function useGetUsersForCards(params: { page: number; limit: number }) {
+  return useQuery({
+    queryKey: ["users_for_cards", params],
+    queryFn: () => usersServices.getUsersForCards(params),
+  });
+}
+
+export function useGetNearbyUsers(
+  params: { page: number; limit: number; radiusKm?: number },
+  enabled: boolean,
+) {
+  return useQuery({
+    queryKey: ["nearby_users", params],
+    queryFn: () => usersServices.getNearbyUsers(params),
+    enabled,
+  });
+}
+
+export function useTravelerProfile(id: string) {
+  return useQuery({
+    queryKey: ["user", id],
+    queryFn: () => usersServices.getTravelerProfile(id),
+    enabled: !!id,
+  });
+}
+
+export function useGetMe(enabled:boolean= true) {
+  return useQuery({
+    queryKey: ["user_profile"],
+    queryFn: () => usersServices.getMe(),
+    enabled
+  });
+}

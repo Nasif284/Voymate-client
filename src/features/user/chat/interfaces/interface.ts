@@ -1,0 +1,64 @@
+export interface ChatAttachment {
+  id?: string;
+  storageKey: string;
+  fileName?: string;
+  mimeType: string;
+  fileSize?: number;
+  url?: string;
+}
+
+export interface ChatMessageDTO {
+  id: string;
+  conversationId: string;
+  senderId: string;
+
+  type: "TEXT" | "IMAGE";
+
+  status?: "SENT" | "DELIVERED" | "READ";
+  readAt?: Date | string | null;
+
+  sender?: {
+    fullName: string;
+    avatarUrl: string | null;
+  };
+
+  content?: string;
+
+  attachment?: ChatAttachment;
+
+  createdAt: Date;
+  updatedAt: Date;
+}
+export interface MessagesResponseDTO {
+  messages: ChatMessageDTO[];
+}
+
+export interface ConversationUser {
+  id: string;
+  name: string;
+  profileImage?: string;
+}
+
+export interface Conversation {
+  conversationId: string;
+
+  user: ConversationUser;
+
+  lastMessage?: {
+    content: string;
+    createdAt: Date;
+    senderId?: string;
+    status?: "SENT" | "DELIVERED" | "READ";
+  };
+
+  unreadCount?: number;
+
+  updatedAt: Date;
+}
+export interface ChatImageAttachment {
+  storageKey: string;
+  fileName?: string;
+  mimeType: string;
+  fileSize: number;
+}
+
