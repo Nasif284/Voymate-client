@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useLogout } from "../features/user/auth/hooks/auth.hooks";
 import { AiAssistantIcon, ChatIcon, ConnectionsIcon, ExploreIcon, HeartIcon, HomeIcon, PersonIcon, SettingsIcon } from "../assets/icons";
+import { Users } from "lucide-react";
 import { useEffect } from "react";
 
 type NavItem = { href: string; label: string; icon: React.ReactNode };
@@ -18,6 +19,11 @@ const NAV_ITEMS: NavItem[] = [
     href: "/matches",
     label: "Matches",
     icon: <HeartIcon />,
+  },
+  {
+    href: "/community-trips",
+    label: "Community Trips",
+    icon: <Users className="w-5 h-5" />,
   },
   {
     href: "/connections",
