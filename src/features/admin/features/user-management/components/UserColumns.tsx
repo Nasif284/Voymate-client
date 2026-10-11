@@ -10,7 +10,7 @@ import Link from "next/link";
 
 export function getUserActions(user: User, onAction: (userId: string, action: UserAction) => void): ActionMenuItem[] {
   const items: ActionMenuItem[] = [];
-  const s = user.accountStatusCode as UserStatus;
+  const s = (user.accountStatusCode || "").toLowerCase();
 
   if (s === "active") {
     items.push({
@@ -48,7 +48,12 @@ export function getUserActions(user: User, onAction: (userId: string, action: Us
 }
 
 
-export function buildUserColumns(openMenuId: string | null, onToggleMenu: (id: string | null) => void, onAction: (userId: string, action: UserAction) => void): Column<User>[] {
+export function buildUserColumns(
+  openMenuId: string | null,
+  onToggleMenu: (id: string | null) => void,
+  onAction: (userId: string, action: UserAction) => void,
+  canModerate: boolean = true
+): Column<User>[] {
   return [
     {
       key: "user",
@@ -77,7 +82,7 @@ export function buildUserColumns(openMenuId: string | null, onToggleMenu: (id: s
     {
       key: "status",
       header: "Status",
-      render: (user) => <UserStatusBadge status={user.accountStatusCode as UserStatus} />,
+      render: (user) => <UserStatusBadge status={user.accountStatusCode} />,
     },
     {
       key: "verified",
@@ -94,11 +99,13 @@ export function buildUserColumns(openMenuId: string | null, onToggleMenu: (id: s
       header: "Action",
       width: "60px",
       render: (user) => (
-        <div className="flex gap-2">
+        <div className="flex gap-2 items-center">
           <Link href={`/admin/users/${user.id}`} className="bg-[#005440]/5 hover:bg-[#005440]/10 text-[#005440] px-3 py-1.5 rounded-lg text-xs font-bold transition-colors whitespace-nowrap">
             View Profile
           </Link>
-          <TableActionMenu rowId={user.id} openId={openMenuId} onToggle={onToggleMenu} items={getUserActions(user, onAction)} />
+          {canModerate && (
+            <TableActionMenu rowId={user.id} openId={openMenuId} onToggle={onToggleMenu} items={getUserActions(user, onAction)} />
+          )}
         </div>
       ),
     },

@@ -19,6 +19,7 @@
 // export default layout;
 import AdminSidebar from "@/src/features/admin/components/AdminSideBar";
 import AdminTopBar from "@/src/features/admin/components/AdminTopBar";
+import AdminAuthGuard from "@/src/features/admin/components/AdminAuthGuard";
 
 const Layout = ({
   children,
@@ -26,15 +27,17 @@ const Layout = ({
   children: React.ReactNode;
 }>) => {
   return (
-    <div className="flex min-h-screen overflow-hidden bg-[#fcf9f5] text-[#1c1c1a] antialiased">
-      <AdminSidebar />
+    <AdminAuthGuard>
+      <div className="flex min-h-screen overflow-hidden bg-[#fcf9f5] text-[#1c1c1a] antialiased">
+        <AdminSidebar />
 
-      <div className="ml-60 flex min-w-0 flex-1 flex-col">
-        <AdminTopBar />
+        <div className="ml-60 flex min-w-0 flex-1 flex-col">
+          <AdminTopBar />
 
-        <main className="min-h-screen pt-14">{children}</main>
+          <main className="min-h-screen pt-14">{children}</main>
+        </div>
       </div>
-    </div>
+    </AdminAuthGuard>
   );
 };
 

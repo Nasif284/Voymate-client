@@ -22,6 +22,7 @@ export default function DiscoverBuddiesSection({
     page: 1,
     limit: 8,
   });
+  console.log("demo:", usersResponse);
 
   const users: UserWithDetails[] = usersResponse?.data?.users ?? [];
   const total = users.length;

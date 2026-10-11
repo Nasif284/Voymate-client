@@ -8,7 +8,7 @@ import DiscoverBuddiesSection from "../../features/user/matches-connections/comp
 import {
   useGetActiveTrip,
   useGetBuddiesUpcomingTrips,
-  useGetAllTripMatches,
+  useGetTripMatches,
 } from "@/src/features/user/matches-connections/hooks/matches.hooks";
 import { useGetNearbyUsers } from "@/src/features/user/matches-connections/hooks/users.hooks";
 import { useGetLocation } from "@/src/hooks/api/location.hooks";
@@ -27,8 +27,10 @@ export default function DashboardPage() {
   );
   const { data: buddiesResponse, isLoading: loadingBuddies } =
     useGetBuddiesUpcomingTrips();
-  const { data: allMatchesResponse, isLoading: loadingTripMatches } =
-    useGetAllTripMatches({
+  const activeTripId = activeTrip?.data?.id;
+
+  const { data: activeTripMatchesResponse, isLoading: loadingTripMatches } =
+    useGetTripMatches(activeTripId!, {
       page: 1,
       limit: 6,
     });
@@ -36,7 +38,7 @@ export default function DashboardPage() {
   const trip = activeTrip?.data;
   const isInitialLoading =
     loadingActiveTrip ||
-    (loadingNearby && loadingBuddies && loadingTripMatches);
+    (loadingNearby && loadingBuddies && (activeTripId ? loadingTripMatches : false));
 
   if (isInitialLoading) {
     return (
@@ -47,14 +49,16 @@ export default function DashboardPage() {
   }
 
   const hasBuddies = (buddiesResponse?.data?.trips?.length ?? 0) > 0;
-  const hasTripMatches = (allMatchesResponse?.data?.matches?.length ?? 0) > 0;
+  const hasTripMatches = Boolean(
+    activeTripId && (activeTripMatchesResponse?.data?.matches?.length ?? 0) > 0
+  );
   const hasNearby =
     (nearbyResponse?.data?.users?.filter((u: UserWithDetails) => u.isTraveling !== false)?.length ?? 0) > 0;
 
   // Build list of populated sections in optimal priority order:
   // 1. Nearby travelers in the user's locality
   // 2. Buddies looking for companions (highest social intent)
-  // 3. Trip matches aggregated across all user trips (destination + date overlap)
+  // 3. Trip matches for the user's active upcoming trip (destination + date overlap)
   const populatedSections: Array<{
     id: "NEARBY" | "BUDDIES" | "TRIP_MATCHES";
     render: () => React.ReactNode;
@@ -96,7 +100,7 @@ export default function DashboardPage() {
   if (hasTripMatches) {
     populatedSections.push({
       id: "TRIP_MATCHES",
-      render: () => <TripMatchesSection key="trip_matches" />,
+      render: () => <TripMatchesSection key="trip_matches" tripId={activeTripId} />,
     });
   }
 

@@ -20,11 +20,23 @@ h4 {
   display: none;
 }
 
-/* Prevent mobile browser auto-zoom on input focus by enforcing 16px font-size on mobile */
+/* Prevent mobile browser auto-zoom on input focus by enforcing 16px default font-size on mobile, unless explicitly marked as compact */
 @media screen and (max-width: 767px) {
-  input,
-  select,
-  textarea {
-    font-size: 16px !important;
+  input:not(.compact-input),
+  select:not(.compact-input),
+  textarea:not(.compact-input) {
+    font-size: 16px;
+  }
+  .compact-input,
+  .compact-input::-webkit-datetime-edit,
+  .compact-input::-webkit-datetime-edit-fields-wrapper,
+  .compact-input::-webkit-datetime-edit-text,
+  .compact-input::-webkit-datetime-edit-month-field,
+  .compact-input::-webkit-datetime-edit-day-field,
+  .compact-input::-webkit-datetime-edit-year-field {
+    font-size: 12px !important;
+  }
+  .compact-input::placeholder {
+    font-size: 12px !important;
   }
 }

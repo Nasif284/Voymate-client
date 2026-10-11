@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useGetActiveTrip, useGetTripMatches } from "../hooks/matches.hooks";
-import MatchSuggestionCard from "./MatchSuggestionCard";
+import TravelerCard from "./TravelerCard";
 import BuddiesOnTheRoadAlert from "./BuddiesOnTheRoadAlert";
 import { TripMatchData } from "../interfaces/profile-listing.interface";
 import { arrowForward, locationPin } from "@/src/assets/icons";
@@ -27,8 +27,8 @@ const MatchSuggestions = () => {
 
   const hasRightSidebar = hasActiveTrip;
   const gridClasses = hasRightSidebar
-    ? "grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-3 gap-2 sm:gap-4 md:gap-6"
-    : "grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 gap-2 sm:gap-4 md:gap-6";
+    ? "grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-2.5 sm:gap-4 md:gap-6"
+    : "grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-4 md:gap-6";
 
   if (isLoading) {
     return (
@@ -212,12 +212,17 @@ const MatchSuggestions = () => {
 
       <div className={gridClasses}>
         {matches.map((match: TripMatchData) => (
-          <MatchSuggestionCard
-            match={match.tripMatch}
-            mode={match.mode}
-            key={match.user.id}
+          <TravelerCard
+            key={`${match.user.id}-${match.tripMatch.id}`}
             traveler={match.user}
             isNearBy={false}
+            destination={match.tripMatch.destination}
+            dateRange={{ from: match.tripMatch.dateFrom, to: match.tripMatch.dateTo }}
+            matchScore={match.tripMatch.totalPoints}
+            profileUrl={`/matches/${match.tripMatch.id}`}
+            mode={match.mode}
+            requestId={match.tripMatch.requestId}
+            connectionStatus={match.tripMatch.connectionStatus}
           />
         ))}
       </div>

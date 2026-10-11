@@ -7,7 +7,8 @@ import {
   useGetTripMatches,
   useSearchTripMatches,
 } from "@/src/features/user/matches-connections/hooks/matches.hooks";
-import MatchSuggestionCard from "@/src/features/user/matches-connections/components/MatchSuggestionCard";
+import TravelerCard from "../components/TravelerCard";
+import { UserWithDetails } from "@/src/Interfaces/users.interface";
 import BuddiesOnTheRoadAlert from "../components/BuddiesOnTheRoadAlert";
 import { TripMatchData } from "../interfaces/profile-listing.interface";
 import SelectTripModal from "../components/SelectTripModal";
@@ -26,6 +27,7 @@ import {
   Wallet,
   ChevronDown,
   RotateCcw,
+  X,
 } from "lucide-react";
 
 const LIMIT = 16;
@@ -97,6 +99,15 @@ export default function TripMatchesPage() {
     setAppliedSearch(null);
     setPage(1);
   };
+
+  const hasAnyFilter = Boolean(
+    searchParams.destinationName ||
+    searchParams.dateFrom ||
+    searchParams.dateTo ||
+    searchParams.travelStyle ||
+    searchParams.budgetStyle ||
+    appliedSearch
+  );
 
   // Determine current dataset and loading status based on active mode
   let matches: TripMatchData[] = [];
@@ -227,45 +238,129 @@ export default function TripMatchesPage() {
       {mode === "SEARCH" && (
         <form
           onSubmit={handleSearchSubmit}
-          className="bg-white p-4 sm:p-6 rounded-2xl sm:rounded-3xl border border-[#bec9c3]/25 shadow-xs transition-all"
+          className="bg-white p-3 sm:p-5 md:p-6 rounded-xl sm:rounded-3xl border border-[#bec9c3]/30 shadow-xs hover:shadow-sm transition-all"
         >
           {/* Header strip */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-4 mb-4 border-b border-[#bec9c3]/20">
-            <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-xl bg-[#c9eadb]/60 flex items-center justify-center text-[#005440]">
-                <Search className="w-4 h-4" />
+          <div className="flex items-center justify-between gap-2 pb-2.5 sm:pb-4 mb-2.5 sm:mb-5 border-b border-[#bec9c3]/20">
+            <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+              <div className="w-7 h-7 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-[#c9eadb]/70 text-[#005440] flex items-center justify-center shrink-0 shadow-xs">
+                <Search className="w-3.5 h-3.5 sm:w-5 sm:h-5" />
               </div>
-              <div>
-                <h3 className="text-sm sm:text-base font-bold text-[#181d1a]">
+              <div className="min-w-0">
+                <h3 className="text-xs sm:text-base font-bold text-[#181d1a] leading-tight truncate">
                   Search Companions by Destination
                 </h3>
-                <p className="text-[11px] sm:text-xs text-[#707973]">
+                <p className="text-[10px] sm:text-xs text-[#707973] mt-0.5 truncate hidden sm:block">
                   Find travelers and trips tailored to your destination, dates, and travel style
                 </p>
               </div>
             </div>
 
-            {appliedSearch && (
+            {hasAnyFilter && (
               <button
                 type="button"
                 onClick={handleResetSearch}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-[#ba1a1a] hover:bg-[#ba1a1a]/10 transition-colors cursor-pointer self-start sm:self-auto"
+                className="inline-flex items-center gap-1 px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-lg sm:rounded-xl text-[11px] sm:text-xs font-bold text-[#ba1a1a] bg-[#ba1a1a]/5 hover:bg-[#ba1a1a]/10 transition-colors cursor-pointer shrink-0"
               >
-                <RotateCcw className="w-3.5 h-3.5" />
-                <span>Reset Filters</span>
+                <RotateCcw className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+                <span>Reset</span>
               </button>
             )}
           </div>
 
-          {/* 4 Fields Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+          {/* Active Filter Chips (if applied) */}
+          {appliedSearch && (appliedSearch.destinationName || appliedSearch.dateFrom || appliedSearch.travelStyle || appliedSearch.budgetStyle) && (
+            <div className="flex flex-wrap items-center gap-1 sm:gap-1.5 mb-2.5 sm:mb-4 px-0.5">
+              <span className="text-[10px] sm:text-[11px] font-semibold text-[#707973] mr-0.5">Filters:</span>
+              {appliedSearch.destinationName && (
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-md sm:rounded-lg bg-[#c9eadb]/60 text-[#005440] text-[10px] sm:text-xs font-semibold">
+                  <MapPin className="w-2.5 h-2.5 sm:w-3 sm:h-3 shrink-0" />
+                  <span>{appliedSearch.destinationName}</span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const updated = { ...searchParams, destinationName: "" };
+                      setSearchParams(updated);
+                      setAppliedSearch({ ...appliedSearch, destinationName: "" });
+                    }}
+                    className="hover:text-black cursor-pointer ml-0.5"
+                    title="Remove destination filter"
+                  >
+                    <X className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
+                  </button>
+                </span>
+              )}
+              {appliedSearch.dateFrom && (
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-md sm:rounded-lg bg-[#c9eadb]/60 text-[#005440] text-[10px] sm:text-xs font-semibold">
+                  <Calendar className="w-2.5 h-2.5 sm:w-3 sm:h-3 shrink-0" />
+                  <span>{appliedSearch.dateFrom} {appliedSearch.dateTo ? `→ ${appliedSearch.dateTo}` : ""}</span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const updated = { ...searchParams, dateFrom: "", dateTo: "" };
+                      setSearchParams(updated);
+                      setAppliedSearch({ ...appliedSearch, dateFrom: "", dateTo: "" });
+                    }}
+                    className="hover:text-black cursor-pointer ml-0.5"
+                    title="Remove dates filter"
+                  >
+                    <X className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
+                  </button>
+                </span>
+              )}
+              {appliedSearch.travelStyle && (
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-md sm:rounded-lg bg-[#c9eadb]/60 text-[#005440] text-[10px] sm:text-xs font-semibold capitalize">
+                  <Compass className="w-2.5 h-2.5 sm:w-3 sm:h-3 shrink-0" />
+                  <span>{appliedSearch.travelStyle.toLowerCase()}</span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const updated = { ...searchParams, travelStyle: "" };
+                      setSearchParams(updated);
+                      setAppliedSearch({ ...appliedSearch, travelStyle: "" });
+                    }}
+                    className="hover:text-black cursor-pointer ml-0.5"
+                    title="Remove travel style filter"
+                  >
+                    <X className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
+                  </button>
+                </span>
+              )}
+              {appliedSearch.budgetStyle && (
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-md sm:rounded-lg bg-[#c9eadb]/60 text-[#005440] text-[10px] sm:text-xs font-semibold capitalize">
+                  <Wallet className="w-2.5 h-2.5 sm:w-3 sm:h-3 shrink-0" />
+                  <span>{appliedSearch.budgetStyle.toLowerCase().replace('_', ' ')}</span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const updated = { ...searchParams, budgetStyle: "" };
+                      setSearchParams(updated);
+                      setAppliedSearch({ ...appliedSearch, budgetStyle: "" });
+                    }}
+                    className="hover:text-black cursor-pointer ml-0.5"
+                    title="Remove budget filter"
+                  >
+                    <X className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
+                  </button>
+                </span>
+              )}
+            </div>
+          )}
+
+          {/* 4 Fields Responsive Layout:
+              - On Desktop (lg): 12 columns grid. Destination: 4 cols, Date Range: 4 cols, Travel Style: 2 cols, Budget Style: 2 cols.
+              - On Mobile (<640px): 2 columns grid! Destination: full width (2 cols), Date Range: full width (2 cols),
+                                    Travel Style: 1 col, Budget Style: 1 col (neatly paired side-by-side!).
+          */}
+          <div className="grid grid-cols-2 lg:grid-cols-12 gap-2 sm:gap-3.5">
             {/* Destination */}
-            <div>
-              <label className="flex items-center gap-1.5 text-[11px] font-bold text-[#3f4944] uppercase tracking-wider mb-1.5">
-                <MapPin className="w-3.5 h-3.5 text-[#005440]" />
-                Destination
+            <div className="col-span-2 lg:col-span-4 flex flex-col justify-between">
+              <label className="flex items-center gap-1 sm:gap-1.5 text-[9px] sm:text-[11px] font-bold text-[#5c6861] uppercase tracking-wider mb-1">
+                <MapPin className="w-2.5 h-2.5 sm:w-3.5 sm:h-3.5 text-[#005440] shrink-0" />
+                <span>Destination</span>
               </label>
-              <div className="relative">
+              <div className="relative flex items-center">
+                <Search className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#707973] absolute left-2.5 sm:left-3 top-1/2 -translate-y-1/2 pointer-events-none shrink-0" />
                 <input
                   type="text"
                   placeholder="e.g. Manali, Tokyo, Paris"
@@ -276,19 +371,28 @@ export default function TripMatchesPage() {
                       destinationName: e.target.value,
                     })
                   }
-                  className="w-full h-11 pl-9 pr-3.5 rounded-xl border border-[#bec9c3]/30 bg-[#fbfdfb] text-xs sm:text-sm text-[#181d1a] placeholder:text-[#88938d] focus:outline-none focus:bg-white focus:ring-2 focus:ring-[#005440]/15 focus:border-[#005440] transition-all"
+                  className="w-full h-9 sm:h-10 pl-8 sm:pl-9 pr-7 sm:pr-8 rounded-lg sm:rounded-xl border border-[#bec9c3]/40 bg-[#fbfdfb] compact-input text-xs sm:text-sm text-[#181d1a] placeholder:text-[#88938d] focus:outline-none focus:bg-white focus:ring-2 focus:ring-[#005440]/20 focus:border-[#005440] transition-all"
                 />
-                <Search className="w-4 h-4 text-[#707973] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+                {searchParams.destinationName && (
+                  <button
+                    type="button"
+                    onClick={() => setSearchParams({ ...searchParams, destinationName: "" })}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 p-0.5 rounded-full text-[#707973] hover:text-[#181d1a] hover:bg-black/5 transition-colors cursor-pointer"
+                    title="Clear destination"
+                  >
+                    <X className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+                  </button>
+                )}
               </div>
             </div>
 
             {/* Date Range */}
-            <div>
-              <label className="flex items-center gap-1.5 text-[11px] font-bold text-[#3f4944] uppercase tracking-wider mb-1.5">
-                <Calendar className="w-3.5 h-3.5 text-[#005440]" />
-                Date Range
+            <div className="col-span-2 lg:col-span-4 flex flex-col justify-between">
+              <label className="flex items-center gap-1 sm:gap-1.5 text-[9px] sm:text-[11px] font-bold text-[#5c6861] uppercase tracking-wider mb-1">
+                <Calendar className="w-2.5 h-2.5 sm:w-3.5 sm:h-3.5 text-[#005440] shrink-0" />
+                <span>Date Range</span>
               </label>
-              <div className="grid grid-cols-2 gap-2">
+              <div className="grid grid-cols-2 gap-1.5 sm:gap-2">
                 <div className="relative">
                   <input
                     type="date"
@@ -299,8 +403,8 @@ export default function TripMatchesPage() {
                         dateFrom: e.target.value,
                       })
                     }
-                    className="w-full h-11 px-2.5 sm:px-3 rounded-xl border border-[#bec9c3]/30 bg-[#fbfdfb] text-xs text-[#181d1a] focus:outline-none focus:bg-white focus:ring-2 focus:ring-[#005440]/15 focus:border-[#005440] transition-all cursor-pointer"
-                    title="From date"
+                    className="w-full h-9 sm:h-10 px-2 sm:px-3 rounded-lg sm:rounded-xl border border-[#bec9c3]/40 bg-[#fbfdfb] compact-input text-xs text-[#181d1a] focus:outline-none focus:bg-white focus:ring-2 focus:ring-[#005440]/20 focus:border-[#005440] transition-all cursor-pointer min-w-0"
+                    title="Start date"
                   />
                 </div>
                 <div className="relative">
@@ -311,18 +415,18 @@ export default function TripMatchesPage() {
                     onChange={(e) =>
                       setSearchParams({ ...searchParams, dateTo: e.target.value })
                     }
-                    className="w-full h-11 px-2.5 sm:px-3 rounded-xl border border-[#bec9c3]/30 bg-[#fbfdfb] text-xs text-[#181d1a] focus:outline-none focus:bg-white focus:ring-2 focus:ring-[#005440]/15 focus:border-[#005440] transition-all cursor-pointer"
-                    title="To date"
+                    className="w-full h-9 sm:h-10 px-2 sm:px-3 rounded-lg sm:rounded-xl border border-[#bec9c3]/40 bg-[#fbfdfb] compact-input text-xs text-[#181d1a] focus:outline-none focus:bg-white focus:ring-2 focus:ring-[#005440]/20 focus:border-[#005440] transition-all cursor-pointer min-w-0"
+                    title="End date"
                   />
                 </div>
               </div>
             </div>
 
             {/* Travel Style */}
-            <div>
-              <label className="flex items-center gap-1.5 text-[11px] font-bold text-[#3f4944] uppercase tracking-wider mb-1.5">
-                <Compass className="w-3.5 h-3.5 text-[#005440]" />
-                Travel Style
+            <div className="col-span-1 lg:col-span-2 flex flex-col justify-between">
+              <label className="flex items-center gap-1 sm:gap-1.5 text-[9px] sm:text-[11px] font-bold text-[#5c6861] uppercase tracking-wider mb-1">
+                <Compass className="w-2.5 h-2.5 sm:w-3.5 sm:h-3.5 text-[#005440] shrink-0" />
+                <span className="truncate">Travel Style</span>
               </label>
               <div className="relative">
                 <select
@@ -333,25 +437,25 @@ export default function TripMatchesPage() {
                       travelStyle: e.target.value,
                     })
                   }
-                  className="w-full h-11 px-3.5 pr-8 rounded-xl border border-[#bec9c3]/30 bg-[#fbfdfb] text-xs sm:text-sm text-[#181d1a] appearance-none focus:outline-none focus:bg-white focus:ring-2 focus:ring-[#005440]/15 focus:border-[#005440] transition-all cursor-pointer"
+                  className="w-full h-9 sm:h-10 pl-2.5 sm:pl-3.5 pr-6 sm:pr-8 rounded-lg sm:rounded-xl border border-[#bec9c3]/40 bg-[#fbfdfb] compact-input text-xs sm:text-sm text-[#181d1a] appearance-none focus:outline-none focus:bg-white focus:ring-2 focus:ring-[#005440]/20 focus:border-[#005440] transition-all cursor-pointer truncate"
                 >
-                  <option value="">Any Travel Style</option>
+                  <option value="">Any Style</option>
                   <option value="ADVENTURE">Adventure</option>
                   <option value="CULTURAL">Cultural</option>
                   <option value="LEISURE">Leisure</option>
                   <option value="SOLO">Solo Explorer</option>
                   <option value="LUXURY">Luxury</option>
-                  <option value="BUDGET">Budget / Backpacking</option>
+                  <option value="BUDGET">Budget</option>
                 </select>
-                <ChevronDown className="w-4 h-4 text-[#707973] absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+                <ChevronDown className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#707973] absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
               </div>
             </div>
 
             {/* Budget Style */}
-            <div>
-              <label className="flex items-center gap-1.5 text-[11px] font-bold text-[#3f4944] uppercase tracking-wider mb-1.5">
-                <Wallet className="w-3.5 h-3.5 text-[#005440]" />
-                Budget Style
+            <div className="col-span-1 lg:col-span-2 flex flex-col justify-between">
+              <label className="flex items-center gap-1 sm:gap-1.5 text-[9px] sm:text-[11px] font-bold text-[#5c6861] uppercase tracking-wider mb-1">
+                <Wallet className="w-2.5 h-2.5 sm:w-3.5 sm:h-3.5 text-[#005440] shrink-0" />
+                <span className="truncate">Budget Style</span>
               </label>
               <div className="relative">
                 <select
@@ -362,40 +466,40 @@ export default function TripMatchesPage() {
                       budgetStyle: e.target.value,
                     })
                   }
-                  className="w-full h-11 px-3.5 pr-8 rounded-xl border border-[#bec9c3]/30 bg-[#fbfdfb] text-xs sm:text-sm text-[#181d1a] appearance-none focus:outline-none focus:bg-white focus:ring-2 focus:ring-[#005440]/15 focus:border-[#005440] transition-all cursor-pointer"
+                  className="w-full h-9 sm:h-10 pl-2.5 sm:pl-3.5 pr-6 sm:pr-8 rounded-lg sm:rounded-xl border border-[#bec9c3]/40 bg-[#fbfdfb] compact-input text-xs sm:text-sm text-[#181d1a] appearance-none focus:outline-none focus:bg-white focus:ring-2 focus:ring-[#005440]/20 focus:border-[#005440] transition-all cursor-pointer truncate"
                 >
                   <option value="">Any Budget</option>
                   <option value="BUDGET">Budget</option>
                   <option value="MID_RANGE">Mid Range</option>
                   <option value="LUXURY">Luxury</option>
                 </select>
-                <ChevronDown className="w-4 h-4 text-[#707973] absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+                <ChevronDown className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#707973] absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
               </div>
             </div>
           </div>
 
           {/* Footer Bar: Tip + Submit Action */}
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-4 border-t border-[#bec9c3]/15 mt-4">
-            <div className="flex items-center gap-2 text-[11px] sm:text-xs text-[#707973]">
+          <div className="flex items-center justify-between gap-2 pt-2.5 sm:pt-4 border-t border-[#bec9c3]/20 mt-2.5 sm:mt-4">
+            <div className="hidden sm:flex items-center gap-2 text-xs text-[#707973] leading-relaxed">
               <Sparkles className="w-3.5 h-3.5 text-[#0f6e56] shrink-0" />
               <span>Tip: Enter a city or state name with overlapping dates to find exact companions.</span>
             </div>
 
-            <div className="flex items-center gap-2.5 w-full sm:w-auto justify-end">
-              {appliedSearch && (
+            <div className="flex items-center gap-2 w-full sm:w-auto shrink-0 justify-end">
+              {hasAnyFilter && (
                 <button
                   type="button"
                   onClick={handleResetSearch}
-                  className="px-4 h-10 rounded-xl border border-[#bec9c3]/40 text-xs font-bold text-[#3f4944] hover:bg-[#ebefeb] transition-all cursor-pointer"
+                  className="px-3 sm:px-4 h-9 sm:h-10 rounded-lg sm:rounded-xl border border-[#bec9c3]/40 text-[11px] sm:text-xs font-bold text-[#3f4944] hover:bg-[#ebefeb] active:scale-95 transition-all cursor-pointer text-center"
                 >
-                  Clear Filters
+                  Clear
                 </button>
               )}
               <button
                 type="submit"
-                className="w-full sm:w-auto px-6 h-10 bg-[#005440] hover:bg-[#003e2f] text-white rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer shadow-xs active:scale-95 flex items-center justify-center gap-2"
+                className="flex-1 sm:flex-initial px-4 sm:px-6 h-9 sm:h-10 bg-[#005440] hover:bg-[#003e2f] text-white rounded-lg sm:rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer shadow-xs active:scale-95 flex items-center justify-center gap-1.5 sm:gap-2 shrink-0"
               >
-                <Search className="w-4 h-4" />
+                <Search className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
                 <span>Find Matches</span>
               </button>
             </div>
@@ -410,7 +514,7 @@ export default function TripMatchesPage() {
 
       {/* ── Results Section ─────────────────────────────────────────── */}
       {isLoading ? (
-        <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-4 md:gap-6">
+        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-4 md:gap-6">
           {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
             <div
               key={i}
@@ -529,17 +633,37 @@ export default function TripMatchesPage() {
             </span>
           </section>
 
-          <section className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-4 md:gap-6">
-            {matches.map((match: TripMatchData) => (
-              <MatchSuggestionCard
-                match={match.tripMatch}
-                mode={match.mode || mode}
-                key={`${match.user.id}-${match.tripMatch.id}`}
-                traveler={match.user}
-                isNearBy={false}
-                showMatchScore={mode === "TRIP" || (mode === "SEARCH" && !!appliedSearch)}
-              />
-            ))}
+          <section className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-4 md:gap-6">
+            {matches.map((match: TripMatchData) => {
+              const isAllAvailable = mode === "SEARCH" && !appliedSearch;
+              const effectiveProfileUrl = isAllAvailable
+                ? `/profile/${match.user.id}?tripId=${match.tripMatch.id}`
+                : `/matches/${match.tripMatch.id}`;
+
+              return (
+                <TravelerCard
+                  key={`${match.user.id}-${match.tripMatch.id}`}
+                  traveler={{
+                    ...match.user,
+                    bio: match.user.bio ?? null,
+                    state: match.user.state ?? "",
+                    avatarUrl: match.user.avatarUrl ?? "",
+                    coverUrl: match.user.coverUrl ?? "",
+                  }}
+                  isNearBy={false}
+                  destination={match.tripMatch.destination}
+                  dateRange={{
+                    from: match.tripMatch.dateFrom || "",
+                    to: match.tripMatch.dateTo || "",
+                  }}
+                  matchScore={isAllAvailable ? null : match.tripMatch.totalPoints}
+                  profileUrl={effectiveProfileUrl}
+                  mode={match.mode || mode}
+                  requestId={match.tripMatch.requestId}
+                  connectionStatus={match.tripMatch.connectionStatus}
+                />
+              );
+            })}
           </section>
 
           {totalPages > 1 && (

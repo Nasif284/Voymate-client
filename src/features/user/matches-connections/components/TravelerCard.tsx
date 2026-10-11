@@ -13,7 +13,13 @@ import {
 } from "../hooks/connection.hooks";
 import { BuddyRequestModal } from "../../profile/components/BuddyRequestModal";
 import { RequestData } from "../../profile/interfaces/profile.interface";
-import { Calendar, Luggage } from "lucide-react";
+import {
+  Calendar,
+  Luggage,
+  UserCheck,
+  UserPlus,
+  Clock,
+} from "lucide-react";
 
 const formatDateRange = (from?: Date | string, to?: Date | string) => {
   if (!from) return "";
@@ -33,24 +39,42 @@ const formatDateRange = (from?: Date | string, to?: Date | string) => {
   return `${fromMonth} ${fromDay} - ${toMonth} ${toDay}`;
 };
 
+export interface TravelerCardProps {
+  readonly traveler: UserWithDetails;
+  readonly isNearBy?: boolean;
+  readonly destination?: string;
+  readonly dateRange?: { from?: Date | string; to?: Date | string };
+  readonly matchScore?: number | null;
+  readonly profileUrl?: string;
+  readonly mode?: "TRIP" | "SEARCH";
+  readonly requestId?: string;
+  readonly connectionStatus?: "CONNECTED" | "REQUEST_RECEIVED" | "REQUEST_SENT" | "NONE";
+}
+
 export default function TravelerCard({
   traveler,
   isNearBy = false,
-}: {
-  readonly traveler: UserWithDetails;
-  readonly isNearBy: boolean;
-}) {
+  destination,
+  dateRange,
+  matchScore,
+  profileUrl,
+  mode = "TRIP",
+  requestId,
+  connectionStatus,
+}: TravelerCardProps) {
   const [showBuddyRequestModal, setShowBuddyRequestModal] = useState(false);
   const requestMutation = useSendConnectionRequest();
   const acceptMutation = useAcceptRequest();
   const { data: requestsRes } = useGetAllRequests();
   const { data: connectionsRes } = useGetConnections();
 
-  const isConnected = Boolean(
-    connectionsRes?.data?.connections?.some(
-      (c: { id: string }) => c.id === traveler.id
-    )
-  );
+  const isConnected =
+    connectionStatus === "CONNECTED" ||
+    Boolean(
+      connectionsRes?.data?.connections?.some(
+        (c: { id: string }) => c.id === traveler.id
+      )
+    );
 
   const existingReq = requestsRes?.data?.requests?.find(
     (e: RequestData) =>
@@ -59,7 +83,7 @@ export default function TravelerCard({
 
   let isRequestReceived = false;
   let isRequestSent = false;
-  let targetRequestId: string | undefined = undefined;
+  let targetRequestId: string | undefined = requestId;
 
   if (existingReq && !isConnected) {
     if (existingReq.senderId === traveler?.id) {
@@ -69,15 +93,30 @@ export default function TravelerCard({
       isRequestSent = true;
       targetRequestId = existingReq.id;
     }
+  } else if (!isConnected) {
+    if (connectionStatus === "REQUEST_RECEIVED") {
+      isRequestReceived = true;
+    } else if (connectionStatus === "REQUEST_SENT") {
+      isRequestSent = true;
+    }
   }
 
-  const travelDateRange = traveler.activeTrip
+  const travelDateRange = dateRange?.from
+    ? formatDateRange(dateRange.from, dateRange.to)
+    : traveler.activeTrip
     ? formatDateRange(traveler.activeTrip.dateFrom, traveler.activeTrip.dateTo)
     : "";
 
-  const profileUrl = traveler.activeTrip?.id
+  const effectiveDestination =
+    destination ||
+    traveler.activeTrip?.destination ||
+    traveler.activeTrip?.name;
+
+  const defaultProfileUrl = traveler.activeTrip?.id
     ? `/profile/${traveler.id}?tripId=${traveler.activeTrip.id}`
     : `/profile/${traveler.id}`;
+
+  const effectiveProfileUrl = profileUrl || defaultProfileUrl;
 
   return (
     <>
@@ -89,7 +128,7 @@ export default function TravelerCard({
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           />
 
-          {/* Left Top Corner - Travel Date Range (if active trip) OR Distance Badge (only if isNearBy) */}
+          {/* Left Top Corner - Travel Date Range / Distance Badge / Connection Status */}
           {travelDateRange ? (
             <div
               className="absolute top-1.5 left-1.5 sm:top-3 sm:left-3 bg-black/60 text-white text-[8px] sm:text-[11px] font-semibold px-1.5 py-0.5 sm:px-2.5 sm:py-1 rounded-full backdrop-blur-md shadow-xs flex items-center gap-1 z-10 max-w-[60%] truncate"
@@ -121,23 +160,52 @@ export default function TravelerCard({
               </svg>
               <span className="truncate">{traveler.distanceKm} km away</span>
             </div>
+          ) : isConnected ? (
+            <div className="absolute top-1.5 left-1.5 sm:top-3 sm:left-3 bg-[#005440]/90 text-white text-[8px] sm:text-[11px] font-bold px-1.5 py-0.5 sm:px-2.5 sm:py-1 rounded-full backdrop-blur-md shadow-xs flex items-center gap-1 z-10">
+              <UserCheck className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-white shrink-0" />
+              <span className="truncate">Connected Mate</span>
+            </div>
+          ) : isRequestReceived ? (
+            <div className="absolute top-1.5 left-1.5 sm:top-3 sm:left-3 bg-[#004736]/90 text-[#a0f3d4] text-[8px] sm:text-[11px] font-bold px-1.5 py-0.5 sm:px-2.5 sm:py-1 rounded-full backdrop-blur-md shadow-xs flex items-center gap-1 z-10 border border-[#a0f3d4]/30">
+              <UserPlus className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-[#a0f3d4] shrink-0" />
+              <span className="truncate">Sent You Request</span>
+            </div>
+          ) : isRequestSent ? (
+            <div className="absolute top-1.5 left-1.5 sm:top-3 sm:left-3 bg-black/60 text-white/90 text-[8px] sm:text-[11px] font-semibold px-1.5 py-0.5 sm:px-2.5 sm:py-1 rounded-full backdrop-blur-md shadow-xs flex items-center gap-1 z-10">
+              <Clock className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-white/90 shrink-0" />
+              <span className="truncate">Request Sent</span>
+            </div>
           ) : null}
 
-          {/* Right Top Corner - Traveling Now status OR Distance Badge only if isNearBy and Date is Top-Left */}
-          {traveler.isTraveling ? (
-            <div className="absolute top-1.5 right-1.5 sm:top-3 sm:right-3 bg-[#005440]/90 text-white text-[8px] sm:text-[11px] font-bold px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full backdrop-blur-md shadow-xs flex items-center gap-1.5 z-10">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-300 animate-pulse shrink-0" />
-              <span className="hidden sm:inline">Traveling Now</span>
-              <span className="sm:hidden">Active</span>
+          {/* Top Right Corner - Match Badge OR Distance Badge OR Connection Status Badge */}
+          {matchScore != null ? (
+            <div className="absolute top-1.5 right-1.5 sm:top-3 sm:right-3 bg-[#005440]/90 text-white text-[8px] sm:text-xs font-bold px-1.5 py-0.5 sm:px-2.5 sm:py-1 rounded-full backdrop-blur-md shadow-xs z-10">
+              <span className="sm:hidden">{matchScore}%</span>
+              <span className="hidden sm:inline">{matchScore}% match</span>
             </div>
           ) : isNearBy && travelDateRange && traveler.distanceKm != null ? (
             <div className="absolute top-1.5 right-1.5 sm:top-3 sm:right-3 bg-black/60 text-white text-[8px] sm:text-[11px] font-semibold px-1.5 py-0.5 sm:px-2.5 sm:py-1 rounded-full backdrop-blur-md shadow-xs flex items-center gap-1 z-10">
               <span className="truncate">{traveler.distanceKm} km</span>
             </div>
+          ) : isNearBy && isConnected ? (
+            <div className="absolute top-1.5 right-1.5 sm:top-3 sm:right-3 bg-[#005440]/90 text-white text-[8px] sm:text-[11px] font-bold px-1.5 py-0.5 sm:px-2.5 sm:py-1 rounded-full backdrop-blur-md shadow-xs flex items-center gap-1 z-10">
+              <UserCheck className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-white shrink-0" />
+              <span className="truncate">Connected</span>
+            </div>
+          ) : isNearBy && isRequestReceived ? (
+            <div className="absolute top-1.5 right-1.5 sm:top-3 sm:right-3 bg-[#004736]/90 text-[#a0f3d4] text-[8px] sm:text-[11px] font-bold px-1.5 py-0.5 sm:px-2.5 sm:py-1 rounded-full backdrop-blur-md shadow-xs flex items-center gap-1 z-10 border border-[#a0f3d4]/30">
+              <UserPlus className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-[#a0f3d4] shrink-0" />
+              <span className="truncate">Requested</span>
+            </div>
+          ) : isNearBy && isRequestSent ? (
+            <div className="absolute top-1.5 right-1.5 sm:top-3 sm:right-3 bg-black/60 text-white/90 text-[8px] sm:text-[11px] font-semibold px-1.5 py-0.5 sm:px-2.5 sm:py-1 rounded-full backdrop-blur-md shadow-xs flex items-center gap-1 z-10">
+              <Clock className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-white/90 shrink-0" />
+              <span className="truncate">Sent</span>
+            </div>
           ) : null}
 
           <div className="absolute bottom-0 left-2 sm:left-6 translate-y-1/2 z-10">
-            <Link href={profileUrl}>
+            <Link href={effectiveProfileUrl}>
               <div className="h-10 w-10 sm:h-16 sm:w-16 rounded-full border-2 sm:border-4 border-white overflow-hidden shadow-md bg-white hover:scale-105 transition-transform cursor-pointer">
                 <img
                   src={traveler.avatarUrl}
@@ -151,7 +219,7 @@ export default function TravelerCard({
 
         <div className="pt-6 sm:pt-9 px-2 sm:px-4 pb-2.5 sm:pb-5 flex flex-col flex-grow text-left">
           <div className="mb-0.5 sm:mb-2">
-            <Link href={profileUrl} className="hover:underline">
+            <Link href={effectiveProfileUrl} className="hover:underline">
               <h2
                 className="text-xs sm:text-lg font-bold text-[#181d1a] truncate leading-tight"
                 title={`${traveler.fullName}, ${traveler.age}`}
@@ -170,15 +238,15 @@ export default function TravelerCard({
             </p>
           </div>
 
-          {/* Trip Badge */}
-          {traveler.activeTrip && (traveler.activeTrip.name || traveler.activeTrip.destination) && (
+          {/* Trip / Destination Badge */}
+          {effectiveDestination && (
             <div className="flex items-center gap-1 sm:gap-1.5 my-1 sm:mt-2 sm:mb-2 flex-wrap w-full">
               <span
                 className="inline-flex items-center gap-1 px-1.5 py-0.5 sm:px-2 sm:py-0.5 bg-[#005440] text-white rounded-full text-[8px] sm:text-[10px] font-bold shrink-0 truncate max-w-full shadow-2xs"
-                title={traveler.activeTrip.name || traveler.activeTrip.destination}
+                title={effectiveDestination}
               >
                 <Luggage className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-white shrink-0" />
-                <span className="truncate">{traveler.activeTrip.name || traveler.activeTrip.destination}</span>
+                <span className="truncate">{effectiveDestination}</span>
               </span>
             </div>
           )}
@@ -205,7 +273,7 @@ export default function TravelerCard({
           <div className="mt-auto flex gap-2 pt-1 sm:pt-2">
             {/* Profile button - visible only on desktop / sm screens */}
             <Link
-              href={profileUrl}
+              href={effectiveProfileUrl}
               className="hidden sm:flex flex-1 items-center justify-center min-h-[40px] text-center text-xs font-bold text-[#005440] hover:bg-[#e5e9e5] rounded-xl transition-colors border border-[#bec9c3]/30 px-2"
             >
               View profile
@@ -269,7 +337,8 @@ export default function TravelerCard({
                 onClick={() => {
                   setShowBuddyRequestModal(true);
                 }}
-                className="w-full sm:flex-1 h-7 sm:h-10 min-h-[26px] sm:min-h-[40px] text-[9px] sm:text-xs font-bold bg-[#0f6e56] text-white rounded-md sm:rounded-xl hover:bg-[#005440] transition-all active:scale-95 cursor-pointer shadow-xs flex items-center justify-center gap-1 sm:gap-1.5 px-1.5 sm:px-2"
+                disabled={requestMutation.isPending}
+                className="w-full sm:flex-1 h-7 sm:h-10 min-h-[26px] sm:min-h-[40px] text-[9px] sm:text-xs font-bold bg-[#0f6e56] text-white rounded-md sm:rounded-xl hover:bg-[#005440] transition-all active:scale-95 cursor-pointer shadow-xs flex items-center justify-center gap-1 sm:gap-1.5 px-1.5 sm:px-2 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <svg
                   className="w-2.5 h-2.5 sm:w-3.5 sm:h-3.5 fill-current flex-shrink-0"
@@ -277,7 +346,7 @@ export default function TravelerCard({
                 >
                   <path d="M15 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm-9-2V8H4v2H2v2h2v2h2v-2h2v-2H6zm9 4c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
                 </svg>
-                <span>Request</span>
+                <span>{requestMutation.isPending ? "Sending..." : "Request"}</span>
               </button>
             )}
           </div>
@@ -300,5 +369,3 @@ export default function TravelerCard({
     </>
   );
 }
-
-

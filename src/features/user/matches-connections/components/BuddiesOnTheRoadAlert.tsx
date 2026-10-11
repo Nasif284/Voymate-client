@@ -65,7 +65,10 @@ export default function BuddiesOnTheRoadAlert({
           const traveler = buddy.user;
           const match = buddy.tripMatch;
           const travelDateRange = formatDateRange(match.dateFrom, match.dateTo);
-          const profileUrl = `/matches/${match.id}`;
+          const profileUrl =
+            match.totalPoints != null
+              ? `/matches/${match.id}`
+              : `/profile/${traveler.id}?tripId=${match.id}`;
 
           return (
             <div
@@ -99,9 +102,11 @@ export default function BuddiesOnTheRoadAlert({
                       {traveler.fullName}
                       {traveler.age ? `, ${traveler.age}` : ""}
                     </Link>
-                    <span className="shrink-0 text-[10px] sm:text-xs font-bold px-1.5 py-0.5 rounded-full bg-[#a0f3d4] text-[#004736]">
-                      {match.totalPoints}% match
-                    </span>
+                    {match.totalPoints != null && (
+                      <span className="shrink-0 text-[10px] sm:text-xs font-bold px-1.5 py-0.5 rounded-full bg-[#a0f3d4] text-[#004736]">
+                        {match.totalPoints}% match
+                      </span>
+                    )}
                   </div>
 
                   <p className="text-[10px] sm:text-xs text-white/75 flex items-center gap-1 mt-0.5 truncate">

@@ -12,6 +12,8 @@ import { UserActionModal } from "./UsersActionModal";
 import { buildUserColumns } from "./UserColumns";
 import type { UserAction } from "./UsersActionModal";
 import type { SortOrder } from "@/src/components/table/TableFilters";
+import { useAdminAuthStore } from "@/src/store/adminAuth.store";
+import { canModerateUsers } from "../../../utils/admin-rbac.utils";
 
 const LIMIT = 5;
 
@@ -82,7 +84,9 @@ export default function UsersTable() {
     setPage(1);
   }
 
-  const columns = buildUserColumns(openMenuId, setOpenMenuId, handleAction);
+  const admin = useAdminAuthStore((state) => state.admin);
+  const canModerate = canModerateUsers(admin?.role);
+  const columns = buildUserColumns(openMenuId, setOpenMenuId, handleAction, canModerate);
   const users = data?.data?.users ?? [];
   const total = data?.data?.total ?? 0;
   const totalPages = data?.data?.totalPages ?? 1;

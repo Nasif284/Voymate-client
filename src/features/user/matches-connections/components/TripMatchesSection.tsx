@@ -1,28 +1,33 @@
 "use client";
 
 import Link from "next/link";
-import { useGetAllTripMatches, useGetActiveTrip } from "../hooks/matches.hooks";
-import MatchSuggestionCard from "./MatchSuggestionCard";
+import { useGetTripMatches, useGetActiveTrip } from "../hooks/matches.hooks";
+import TravelerCard from "./TravelerCard";
 import BuddiesOnTheRoadAlert from "./BuddiesOnTheRoadAlert";
 import { TripMatchData } from "../interfaces/profile-listing.interface";
 import { arrowForward } from "@/src/assets/icons";
 import { Luggage } from "lucide-react";
 
 interface TripMatchesSectionProps {
-  readonly onMatchesLoaded?: (count: number) => void;
+  readonly tripId?: string;
 }
 
-export default function TripMatchesSection({ onMatchesLoaded }: TripMatchesSectionProps) {
+export default function TripMatchesSection({ tripId }: TripMatchesSectionProps) {
   const { data: activeTrip } = useGetActiveTrip();
-  const { data: allTripsMatchData, isLoading } = useGetAllTripMatches({ page: 1, limit: 6 });
+  const effectiveTripId = tripId || activeTrip?.data?.id;
 
-  const matches: TripMatchData[] = allTripsMatchData?.data?.matches ?? [];
-  const buddiesOnRoad: TripMatchData[] = allTripsMatchData?.data?.buddiesOnRoad ?? [];
+  const { data: tripMatchesData, isLoading } = useGetTripMatches(
+    effectiveTripId!,
+    { page: 1, limit: 6 }
+  );
+
+  const matches: TripMatchData[] = tripMatchesData?.data?.matches ?? [];
+  const buddiesOnRoad: TripMatchData[] = tripMatchesData?.data?.buddiesOnRoad ?? [];
 
   const hasRightSidebar = !!activeTrip?.data?.name;
   const gridClasses = hasRightSidebar
-    ? "grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-3 gap-2 sm:gap-4 md:gap-6"
-    : "grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 gap-2 sm:gap-4 md:gap-6";
+    ? "grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-2.5 sm:gap-4 md:gap-6"
+    : "grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-4 md:gap-6";
 
   if (isLoading) {
     return (
@@ -56,11 +61,11 @@ export default function TripMatchesSection({ onMatchesLoaded }: TripMatchesSecti
               <Luggage className="w-4 h-4 sm:w-5 sm:h-5 text-[#005440]" />
             </div>
             <h2 className="text-xl sm:text-2xl md:text-3xl font-black text-[#181d1a] tracking-tight font-headline">
-              Companions for Your Upcoming Trips
+              Companions for Your Upcoming Trip
             </h2>
           </div>
           <p className="text-[#3f4944] text-xs sm:text-sm md:text-base">
-            Travelers heading to your destinations on overlapping dates, matched to your travel style.
+            Travelers heading to your destination on overlapping dates, matched to your travel style.
           </p>
         </div>
       </header>
@@ -72,13 +77,17 @@ export default function TripMatchesSection({ onMatchesLoaded }: TripMatchesSecti
 
         <div className={gridClasses}>
           {matches.map((match: TripMatchData) => (
-            <MatchSuggestionCard
-              match={match.tripMatch}
-              mode={match.mode}
-              key={match.user.id}
+            <TravelerCard
+              key={`${match.user.id}-${match.tripMatch.id}`}
               traveler={match.user}
               isNearBy={false}
-              forTripName={match.forTripName}
+              destination={match.tripMatch.destination}
+              dateRange={{ from: match.tripMatch.dateFrom, to: match.tripMatch.dateTo }}
+              matchScore={match.tripMatch.totalPoints}
+              profileUrl={`/matches/${match.tripMatch.id}`}
+              mode={match.mode}
+              requestId={match.tripMatch.requestId}
+              connectionStatus={match.tripMatch.connectionStatus}
             />
           ))}
         </div>

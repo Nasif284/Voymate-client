@@ -8,6 +8,8 @@ import StatusBadge from "../components/StatusBadge";
 import ProfileTab from "../components/ProfileTab";
 import ComingSoonTab from "../components/ComingSoonTab";
 import { useChangeUserStatus, useGetUserProfile } from "../hooks/user-management.hooks";
+import { useAdminAuthStore } from "@/src/store/adminAuth.store";
+import { canModerateUsers } from "../../../utils/admin-rbac.utils";
 
 const Icons = {
   verified: (
@@ -62,6 +64,8 @@ export default function AdminUserDetailPage() {
   const { data: profileData, isLoading } = useGetUserProfile(userId);
   const changeStatus = useChangeUserStatus();
 
+  const admin = useAdminAuthStore((state) => state.admin);
+  const canModerate = canModerateUsers(admin?.role);
 
   const isPending = false;
 
@@ -80,7 +84,7 @@ export default function AdminUserDetailPage() {
     );
   }
   const profile = profileData?.data;
-  const accountStatus = profile?.status;
+  const accountStatus = (profile?.status || "active").toLowerCase();
   const statCards = [
     { label: "Trips", value: profile?.tripCount, color: "text-[#1c1c1a]" },
     { label: "Buddies", value: profile?.connectionsCount, color: "text-[#1c1c1a]" },
@@ -113,24 +117,26 @@ export default function AdminUserDetailPage() {
           </div>
 
           {/* Action buttons */}
-          <div className="flex flex-wrap gap-3">
-            {/* <button className="flex items-center gap-2 px-5 py-2 bg-[#ebe8e4] hover:bg-[#e5e2de] text-[#1c1c1a] text-sm font-semibold rounded-lg transition-all active:scale-95">{Icons.mail} Send Warning</button> */}
-            {accountStatus !== "suspended" && (
-              <button onClick={() => setActionModal({ userId, action: "suspend" })} className="flex items-center gap-2 px-5 py-2 bg-[#ffdad4] text-[#743329] text-sm font-semibold rounded-lg hover:brightness-95 transition-all active:scale-95">
-                {Icons.block} Suspend
-              </button>
-            )}
-            {accountStatus !== "banned" && (
-              <button onClick={() => setActionModal({ userId, action: "ban" })} className="flex items-center gap-2 px-5 py-2 bg-[#ffdad6] text-[#93000a] text-sm font-semibold rounded-lg hover:brightness-95 transition-all active:scale-95">
-                {Icons.delete} Ban
-              </button>
-            )}
-            {(accountStatus === "suspended" || accountStatus === "banned") && (
-              <button onClick={() => setActionModal({ userId, action: "activate" })} className="flex items-center gap-2 px-5 py-2 bg-emerald-100 text-emerald-800 text-sm font-semibold rounded-lg hover:brightness-95 transition-all active:scale-95">
-                {Icons.check} Activate
-              </button>
-            )}
-          </div>
+          {canModerate && (
+            <div className="flex flex-wrap gap-3">
+              {/* <button className="flex items-center gap-2 px-5 py-2 bg-[#ebe8e4] hover:bg-[#e5e2de] text-[#1c1c1a] text-sm font-semibold rounded-lg transition-all active:scale-95">{Icons.mail} Send Warning</button> */}
+              {accountStatus !== "suspended" && (
+                <button onClick={() => setActionModal({ userId, action: "suspend" })} className="flex items-center gap-2 px-5 py-2 bg-[#ffdad4] text-[#743329] text-sm font-semibold rounded-lg hover:brightness-95 transition-all active:scale-95">
+                  {Icons.block} Suspend
+                </button>
+              )}
+              {accountStatus !== "banned" && (
+                <button onClick={() => setActionModal({ userId, action: "ban" })} className="flex items-center gap-2 px-5 py-2 bg-[#ffdad6] text-[#93000a] text-sm font-semibold rounded-lg hover:brightness-95 transition-all active:scale-95">
+                  {Icons.delete} Ban
+                </button>
+              )}
+              {(accountStatus === "suspended" || accountStatus === "banned") && (
+                <button onClick={() => setActionModal({ userId, action: "activate" })} className="flex items-center gap-2 px-5 py-2 bg-emerald-100 text-emerald-800 text-sm font-semibold rounded-lg hover:brightness-95 transition-all active:scale-95">
+                  {Icons.check} Activate
+                </button>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Stats */}

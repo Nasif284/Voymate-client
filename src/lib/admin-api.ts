@@ -16,13 +16,18 @@ adminApi.interceptors.response.use(
       originalRequest._retry = true;
 
       try {
-        await axios.post(
+        const refreshRes = await axios.post(
           `${process.env.NEXT_PUBLIC_API_URL}/admin/auth/refresh`,
           {},
           {
             withCredentials: true,
           },
         );
+
+        if (refreshRes.data?.data?.user) {
+          const { useAdminAuthStore } = await import("@/src/store/adminAuth.store");
+          useAdminAuthStore.getState().setAdmin(refreshRes.data.data.user);
+        }
 
         return adminApi(originalRequest);
       } catch {

@@ -38,7 +38,7 @@ export function TableActionMenu({ rowId, openId, onToggle, items }: TableActionM
       const rect = buttonRef.current.getBoundingClientRect();
 
       setPosition({
-        top: rect.bottom + window.scrollY + 8,
+        top: rect.bottom + 6,
         right: window.innerWidth - rect.right,
       });
     }
@@ -106,7 +106,9 @@ export function TableActionMenu({ rowId, openId, onToggle, items }: TableActionM
     <>
       <button
         ref={buttonRef}
+        type="button"
         onClick={(e) => {
+          e.preventDefault();
           e.stopPropagation();
           onToggle(isOpen ? null : rowId);
         }}

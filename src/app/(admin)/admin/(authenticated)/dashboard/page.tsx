@@ -18,6 +18,28 @@ const PERIOD_OPTIONS: {
   { value: "LAST_YEAR", label: "Last 12 months" },
 ];
 
+function formatAcquisitionSource(source: string): string {
+  if (!source) return "";
+  const customMap: Record<string, string> = {
+    FRIENDS_FAMILY: "Friends or Family",
+    SOCIAL_MEDIA: "Social Media",
+    SEARCH_ENGINE: "Search Engine",
+    TRAVEL_BLOG: "Travel Blog",
+    APP_STORE: "App Store",
+    OTHER: "Other",
+  };
+  const upper = source.toUpperCase();
+  if (customMap[upper]) return customMap[upper];
+  if (source.includes("_")) {
+    return source
+      .toLowerCase()
+      .split("_")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
+  }
+  return source;
+}
+
 export default function AdminDashboardPage() {
   const [period, setPeriod] = useState<AnalyticsPeriod>("LAST_30_DAYS");
 
@@ -95,7 +117,7 @@ export default function AdminDashboardPage() {
                   data.users.acquisition.map((item) => (
                     <div key={item.source}>
                       <div className="mb-1.5 flex items-center justify-between">
-                        <span className="text-sm font-medium">{item.source}</span>
+                        <span className="text-sm font-medium">{formatAcquisitionSource(item.source)}</span>
 
                         <span className="text-sm font-bold">{item.percentage}%</span>
                       </div>

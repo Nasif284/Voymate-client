@@ -23,8 +23,8 @@ const NearbyTravelers = ({ hideIfEmpty = true }: { hideIfEmpty?: boolean }) => {
 
   const hasRightSidebar = !!activeTrip?.data?.name;
   const gridClasses = hasRightSidebar
-    ? "grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-3 gap-2 sm:gap-4 md:gap-6"
-    : "grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 gap-2 sm:gap-4 md:gap-6";
+    ? "grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-2.5 sm:gap-4 md:gap-6"
+    : "grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-4 md:gap-6";
 
   if (nearbyLoading || locationLoading) {
     return (
@@ -42,15 +42,12 @@ const NearbyTravelers = ({ hideIfEmpty = true }: { hideIfEmpty?: boolean }) => {
   const users: UserWithDetails[] = (nearbyResponse?.data?.users ?? []).filter(
     (u: UserWithDetails) => u.isTraveling !== false
   );
-  const isFallback = !!nearbyResponse?.data?.isFallback;
-  const fallbackScope = nearbyResponse?.data?.fallbackScope;
-  const fallbackRegion = nearbyResponse?.data?.fallbackRegion;
 
   if (hideIfEmpty && users.length === 0) {
     return null;
   }
 
-  // Empty State: 0 travelers found anywhere in platform
+  // Empty State: 0 travelers found within 50 km
   if (users.length === 0) {
     return (
       <>
@@ -89,7 +86,7 @@ const NearbyTravelers = ({ hideIfEmpty = true }: { hideIfEmpty?: boolean }) => {
           </h3>
 
           <p className="mt-2.5 text-xs sm:text-sm md:text-base text-[#3f4944] max-w-lg mx-auto leading-relaxed">
-            No travelers have checked in nearby just yet. Put yourself on the map by creating a trip plan so other travelers heading your way can discover and connect with you.
+            No travelers have checked in within 50 km just yet. Put yourself on the map by creating a trip plan so other travelers heading your way can discover and connect with you.
           </p>
 
           <div className="mt-6 sm:mt-8 flex flex-wrap items-center justify-center gap-3">
@@ -110,23 +107,9 @@ const NearbyTravelers = ({ hideIfEmpty = true }: { hideIfEmpty?: boolean }) => {
     );
   }
 
-  // Active or Fallback Travelers Found
+  // Active Travelers Found within 50km
   return (
     <div className="space-y-4 sm:space-y-6">
-      {/* Supportive Fallback Bar if fallback is active */}
-      {isFallback && (
-        <div className="flex items-center gap-2 px-3.5 sm:px-4 py-2.5 rounded-xl bg-[#eef8f4] border border-[#0f6e56]/15 text-[#3f4944] text-xs sm:text-sm">
-          <span className="w-2 h-2 rounded-full bg-[#0f6e56] shrink-0" />
-          <span>
-            Showing active explorers{" "}
-            <strong className="text-[#0f6e56] font-semibold">
-              {fallbackScope === "state" && fallbackRegion
-                ? `across ${fallbackRegion}`
-                : "across the community"}
-            </strong>
-          </span>
-        </div>
-      )}
 
       {/* Grid of Traveler Cards */}
       <div className={gridClasses}>

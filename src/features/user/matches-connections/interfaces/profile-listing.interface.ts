@@ -9,7 +9,7 @@ export type ConnectionStatus =
 export interface MatchData {
   id: string;
   matchedTripId?: string;
-  totalPoints: number;
+  totalPoints?: number | null;
   dateFrom?: Date;
   dateTo?: Date;
   destination: string;

@@ -23,6 +23,8 @@ const navItems: NavItem[] = [
   { href: "/admin/admins", label: "Admins", icon: <AdminIcon /> },
 ];
 
+import { canManageAdmins, normalizeAdminRole } from "../utils/admin-rbac.utils";
+
 export default function AdminSidebar() {
   const pathname = usePathname();
   const logout = useAdminLogout();
@@ -35,6 +37,24 @@ export default function AdminSidebar() {
   const handleLogout = () => {
     logout.mutate();
   };
+
+  const isSuper = canManageAdmins(admin?.role);
+  const filteredNavItems = navItems.filter((item) => {
+    if (item.href === "/admin/admins") {
+      return isSuper;
+    }
+    return true;
+  });
+
+  const initials = mounted && admin?.fullName
+    ? admin.fullName
+        .split(" ")
+        .filter(Boolean)
+        .slice(0, 2)
+        .map((p) => p[0].toUpperCase())
+        .join("")
+    : "AD";
+
   return (
     <aside className="w-60 h-screen fixed left-0 top-0 bg-[#1c1c1a] flex flex-col py-6 shadow-2xl z-50 overflow-hidden">
       {/* Brand + Identity */}
@@ -45,17 +65,19 @@ export default function AdminSidebar() {
         </div>
         {/* Identity module */}
         <div className="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/5">
-          <div className="w-10 h-10 rounded-lg bg-[#0f6e56] flex items-center justify-center text-[#9aedcf] font-bold text-sm">AM</div>
-          <div className="flex flex-col">
-            <span className="text-sm font-semibold text-white leading-none">{mounted ? admin?.fullName : ""}</span>
-            <span className="text-[11px] text-stone-400 mt-1">{mounted ? admin?.role : ""}</span>
+          <div className="w-10 h-10 rounded-lg bg-[#0f6e56] flex items-center justify-center text-[#9aedcf] font-bold text-sm">
+            {initials}
+          </div>
+          <div className="flex flex-col min-w-0">
+            <span className="text-sm font-semibold text-white leading-none truncate">{mounted ? admin?.fullName : ""}</span>
+            <span className="text-[11px] text-stone-400 mt-1 truncate">{mounted ? normalizeAdminRole(admin?.role) : ""}</span>
           </div>
         </div>
       </div>
 
       {/* Nav */}
       <nav className="flex-1 px-3 overflow-y-auto space-y-1 scrollbar-hide">
-        {navItems.map((item) => {
+        {filteredNavItems.map((item) => {
           const isActive = pathname.startsWith(item.href);
           return (
             <Link key={item.href} href={item.href} className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium tracking-tight transition-all duration-200 ${isActive ? "border-l-4 border-[#0f6e56] text-[#0f6e56] bg-[#0f6e56]/10 font-bold pl-2" : "text-stone-400 hover:text-white hover:bg-stone-800/50"}`}>
