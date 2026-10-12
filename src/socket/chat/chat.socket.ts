@@ -9,6 +9,7 @@ export function leaveConversation(conversationId: string) {
   getSocket().emit("chat:leave", conversationId);
 }
 
+
 export function sendMessage(target: { conversationId?: string; recipientId?: string }, content: string) {
   getSocket().emit("chat:send", {
     ...(target.conversationId ? { conversationId: target.conversationId } : {}),
