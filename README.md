@@ -266,23 +266,7 @@ client/
 - **Node.js**: `v20.x` or higher
 - **Backend API**: Voymate Server running on `http://localhost:3000`
 
-### 2. Environment Configuration
-Create a `.env.local` file inside the `client/` root directory:
-
-```env
-# Backend API Endpoints
-NEXT_PUBLIC_API_URL=
-NEXT_PUBLIC_API_BASE=
-
-# Google OAuth & Geocoding
-NEXT_PUBLIC_GOOGLE_CLIENT_ID=your_google_oauth_client_id.apps.googleusercontent.com
-NEXT_PUBLIC_GOOGLE_PLACES_API_KEY=your_google_places_api_key
-
-# Razorpay Checkout Gateway
-NEXT_PUBLIC_RAZORPAY_TEST_KEY_ID=rzp_test_yourKeyId
-```
-
-### 3. Installation & Development Server
+### 2. Installation & Development Server
 ```bash
 # Install dependencies
 npm install
@@ -293,7 +277,7 @@ npm run dev
 # Open http://localhost:3001 in your browser
 ```
 
-### 4. Production Build & Linting
+### 3. Production Build & Linting
 ```bash
 # Verify TypeScript strict compilation across all modules
 npm run build
@@ -304,7 +288,7 @@ npm run lint
 
 ---
 
-## 👨‍💻 Engineering Philosophy & Takeaways
+## 👨‍💻 Engineering Philosophy & Takeaways 
 
 > *"A world-class frontend is not just about aesthetic UI design. It is defined by its resilience against network failures, deterministic real-time state management, clean component decoupling, and uncompromised performance under heavy data streaming."*
 
