@@ -288,7 +288,7 @@ npm run lint
 
 ---
 
-## 👨‍💻 Engineering Philosophy & Takeaways 
+## 👨‍💻 Engineering Philosophy & Takeaways
 
 > *"A world-class frontend is not just about aesthetic UI design. It is defined by its resilience against network failures, deterministic real-time state management, clean component decoupling, and uncompromised performance under heavy data streaming."*
 
