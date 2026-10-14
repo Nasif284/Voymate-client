@@ -5,8 +5,7 @@ import { useGetTripMatches, useGetActiveTrip } from "../hooks/matches.hooks";
 import TravelerCard from "./TravelerCard";
 import BuddiesOnTheRoadAlert from "./BuddiesOnTheRoadAlert";
 import { TripMatchData } from "../interfaces/profile-listing.interface";
-import { arrowForward } from "@/src/assets/icons";
-import { Luggage } from "lucide-react";
+import { Luggage, ArrowRight } from "lucide-react";
 
 interface TripMatchesSectionProps {
   readonly tripId?: string;
@@ -113,7 +112,7 @@ export default function TripMatchesSection({ tripId }: TripMatchesSectionProps) 
             >
               <span className="sm:hidden">More</span>
               <span className="hidden sm:inline">Find More Travel Matches</span>
-              {arrowForward}
+              <ArrowRight className="w-4 h-4" />
             </button>
           </Link>
         </div>

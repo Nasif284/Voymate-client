@@ -1,12 +1,18 @@
 "use client";
 
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import {
+  LayoutDashboard,
+  Users,
+  ShieldCheck,
+  Shield,
+  LogOut,
+} from "lucide-react";
 import { useAdminLogout } from "../features/auth/hooks/admin-auth.hooks";
-import { useAuthStore } from "@/src/store/auth.store";
-import { AdminIcon, AssessmentIcon, DashboardIcon, ExploreIcon, GroupIcon, LogoutIcon, MonitoringIcon } from "@/src/assets/icons";
-import { useEffect, useState } from "react";
 import { useAdminAuthStore } from "@/src/store/adminAuth.store";
+import { canManageAdmins, normalizeAdminRole } from "../utils/admin-rbac.utils";
 
 type NavItem = {
   href: string;
@@ -15,15 +21,11 @@ type NavItem = {
 };
 
 const navItems: NavItem[] = [
-  { href: "/admin/dashboard", label: "Dashboard", icon: <DashboardIcon /> },
-  { href: "/admin/users", label: "All Users", icon: <GroupIcon /> },
-  { href: "/admin/verifications", label: "Verifications", icon: <MonitoringIcon /> },
-  // { href: "/admin/reports", label: "Reports", icon: <Icons.AssessmentIcon /> },
-  // { href: "/admin/analytics", label: "Analytics", icon: <Icons.MonitoringIcon /> },
-  { href: "/admin/admins", label: "Admins", icon: <AdminIcon /> },
+  { href: "/admin/dashboard", label: "Dashboard", icon: <LayoutDashboard className="w-5 h-5" /> },
+  { href: "/admin/users", label: "All Users", icon: <Users className="w-5 h-5" /> },
+  { href: "/admin/verifications", label: "Verifications", icon: <ShieldCheck className="w-5 h-5" /> },
+  { href: "/admin/admins", label: "Admins", icon: <Shield className="w-5 h-5" /> },
 ];
-
-import { canManageAdmins, normalizeAdminRole } from "../utils/admin-rbac.utils";
 
 export default function AdminSidebar() {
   const pathname = usePathname();
@@ -34,6 +36,7 @@ export default function AdminSidebar() {
   useEffect(() => {
     setMounted(true);
   }, []);
+
   const handleLogout = () => {
     logout.mutate();
   };
@@ -46,14 +49,15 @@ export default function AdminSidebar() {
     return true;
   });
 
-  const initials = mounted && admin?.fullName
-    ? admin.fullName
-        .split(" ")
-        .filter(Boolean)
-        .slice(0, 2)
-        .map((p) => p[0].toUpperCase())
-        .join("")
-    : "AD";
+  const initials =
+    mounted && admin?.fullName
+      ? admin.fullName
+          .split(" ")
+          .filter(Boolean)
+          .slice(0, 2)
+          .map((p) => p[0].toUpperCase())
+          .join("")
+      : "AD";
 
   return (
     <aside className="w-60 h-screen fixed left-0 top-0 bg-[#1c1c1a] flex flex-col py-6 shadow-2xl z-50 overflow-hidden">
@@ -61,7 +65,9 @@ export default function AdminSidebar() {
       <div className="px-6 mb-8 flex flex-col gap-4">
         <div className="flex items-center justify-between">
           <span className="text-xl font-black text-white uppercase tracking-tighter">Voymate</span>
-          <span className="px-2 py-0.5 bg-[#0f6e56] text-white text-[10px] font-bold rounded uppercase tracking-wider">Admin</span>
+          <span className="px-2 py-0.5 bg-[#0f6e56] text-white text-[10px] font-bold rounded uppercase tracking-wider">
+            Admin
+          </span>
         </div>
         {/* Identity module */}
         <div className="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/5">
@@ -69,8 +75,12 @@ export default function AdminSidebar() {
             {initials}
           </div>
           <div className="flex flex-col min-w-0">
-            <span className="text-sm font-semibold text-white leading-none truncate">{mounted ? admin?.fullName : ""}</span>
-            <span className="text-[11px] text-stone-400 mt-1 truncate">{mounted ? normalizeAdminRole(admin?.role) : ""}</span>
+            <span className="text-sm font-semibold text-white leading-none truncate">
+              {mounted ? admin?.fullName : ""}
+            </span>
+            <span className="text-[11px] text-stone-400 mt-1 truncate">
+              {mounted ? normalizeAdminRole(admin?.role) : ""}
+            </span>
           </div>
         </div>
       </div>
@@ -80,7 +90,15 @@ export default function AdminSidebar() {
         {filteredNavItems.map((item) => {
           const isActive = pathname.startsWith(item.href);
           return (
-            <Link key={item.href} href={item.href} className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium tracking-tight transition-all duration-200 ${isActive ? "border-l-4 border-[#0f6e56] text-[#0f6e56] bg-[#0f6e56]/10 font-bold pl-2" : "text-stone-400 hover:text-white hover:bg-stone-800/50"}`}>
+            <Link
+              key={item.href}
+              href={item.href}
+              className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium tracking-tight transition-all duration-200 ${
+                isActive
+                  ? "border-l-4 border-[#0f6e56] text-[#0f6e56] bg-[#0f6e56]/10 font-bold pl-2"
+                  : "text-stone-400 hover:text-white hover:bg-stone-800/50"
+              }`}
+            >
               {item.icon}
               <span>{item.label}</span>
             </Link>
@@ -89,9 +107,13 @@ export default function AdminSidebar() {
       </nav>
 
       <div className="mt-auto px-3">
-        <button onClick={handleLogout} className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[#ba1a1a] hover:bg-[#ba1a1a]/10 text-sm font-semibold tracking-tight transition-all duration-200 group">
+        <button
+          type="button"
+          onClick={handleLogout}
+          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-[#ba1a1a] hover:bg-[#ba1a1a]/10 text-sm font-semibold tracking-tight transition-all duration-200 group cursor-pointer"
+        >
           <span className="group-hover:translate-x-0.5 transition-transform">
-            <LogoutIcon />
+            <LogOut className="w-4 h-4" />
           </span>
           <span>Sign out</span>
         </button>

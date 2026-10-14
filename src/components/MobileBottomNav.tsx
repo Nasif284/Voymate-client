@@ -1,8 +1,9 @@
 "use client";
 
+import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ChatIcon, ExploreIcon, HeartIcon, HomeIcon, PersonIcon } from "../assets/icons";
+import { Home, Heart, Compass, MessageSquare, User } from "lucide-react";
 
 type NavItem = {
   href: string;
@@ -12,29 +13,29 @@ type NavItem = {
 
 const BOTTOM_NAV_ITEMS: NavItem[] = [
   {
-    href: "/",
+    href: "/home",
     label: "Home",
-    icon: <HomeIcon />,
+    icon: <Home className="w-5 h-5" />,
   },
   {
     href: "/matches",
     label: "Matches",
-    icon: <HeartIcon />,
+    icon: <Heart className="w-5 h-5" />,
   },
   {
     href: "/trips/plans/active",
     label: "Trips",
-    icon: <ExploreIcon />,
+    icon: <Compass className="w-5 h-5" />,
   },
   {
     href: "/messages",
     label: "Messages",
-    icon: <ChatIcon />,
+    icon: <MessageSquare className="w-5 h-5" />,
   },
   {
     href: "/profile",
     label: "Profile",
-    icon: <PersonIcon />,
+    icon: <User className="w-5 h-5" />,
   },
 ];
 

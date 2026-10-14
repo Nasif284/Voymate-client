@@ -1,7 +1,7 @@
 "use client";
 
-import { ChevronLeftIcon, ChevronRightIcon } from "@/src/assets/icons";
-
+import React from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 interface TablePaginationProps {
   page: number;
@@ -11,7 +11,13 @@ interface TablePaginationProps {
   onPageChange: (page: number) => void;
 }
 
-export function TablePagination({ page, totalPages, total, limit, onPageChange }: TablePaginationProps) {
+export function TablePagination({
+  page,
+  totalPages,
+  total,
+  limit,
+  onPageChange,
+}: TablePaginationProps) {
   function getVisiblePages(): number[] {
     const pages: number[] = [];
     const start = Math.max(page - 1, 1);
@@ -30,8 +36,13 @@ export function TablePagination({ page, totalPages, total, limit, onPageChange }
       </span>
 
       <div className="flex items-center gap-1">
-        <button disabled={page === 1} onClick={() => onPageChange(Math.max(1, page - 1))} className="p-1 rounded hover:bg-[#ebe8e4] transition-colors text-[#3f4944] disabled:opacity-40">
-          <ChevronLeftIcon />
+        <button
+          type="button"
+          disabled={page === 1}
+          onClick={() => onPageChange(Math.max(1, page - 1))}
+          className="p-1 rounded hover:bg-[#ebe8e4] transition-colors text-[#3f4944] disabled:opacity-40 cursor-pointer"
+        >
+          <ChevronLeft className="w-4 h-4" />
         </button>
 
         {page > 2 && (
@@ -52,17 +63,36 @@ export function TablePagination({ page, totalPages, total, limit, onPageChange }
           </>
         )}
 
-        <button disabled={page === totalPages} onClick={() => onPageChange(Math.min(totalPages, page + 1))} className="p-1 rounded hover:bg-[#ebe8e4] transition-colors text-[#3f4944] disabled:opacity-40">
-          <ChevronRightIcon />
+        <button
+          type="button"
+          disabled={page === totalPages}
+          onClick={() => onPageChange(Math.min(totalPages, page + 1))}
+          className="p-1 rounded hover:bg-[#ebe8e4] transition-colors text-[#3f4944] disabled:opacity-40 cursor-pointer"
+        >
+          <ChevronRight className="w-4 h-4" />
         </button>
       </div>
     </div>
   );
 }
 
-function PageButton({ n, current, onClick }: { n: number; current: number; onClick: (n: number) => void }) {
+function PageButton({
+  n,
+  current,
+  onClick,
+}: {
+  n: number;
+  current: number;
+  onClick: (n: number) => void;
+}) {
   return (
-    <button onClick={() => onClick(n)} className={`w-8 h-8 rounded text-xs font-bold transition-colors ${current === n ? "bg-[#005440] text-white" : "hover:bg-[#ebe8e4] text-[#1c1c1a]"}`}>
+    <button
+      type="button"
+      onClick={() => onClick(n)}
+      className={`w-8 h-8 rounded text-xs font-bold transition-colors cursor-pointer ${
+        current === n ? "bg-[#005440] text-white" : "hover:bg-[#ebe8e4] text-[#1c1c1a]"
+      }`}
+    >
       {n}
     </button>
   );

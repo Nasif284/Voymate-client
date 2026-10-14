@@ -1,6 +1,7 @@
 "use client";
 
-import { ChevronLeftIcon, ChevronRightIcon } from "../assets/icons";
+import React from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 interface PaginationProps {
   page: number;
@@ -12,6 +13,7 @@ export function Pagination({ page, totalPages, onPageChange }: PaginationProps) 
   return (
     <div className="flex items-center justify-center gap-2 sm:gap-4 py-3 sm:py-6">
       <button
+        type="button"
         disabled={page === 1}
         onClick={() => onPageChange(page - 1)}
         className="
@@ -34,7 +36,7 @@ export function Pagination({ page, totalPages, onPageChange }: PaginationProps) 
         "
       >
         <span className="scale-75 sm:scale-100 flex-shrink-0">
-          <ChevronLeftIcon />
+          <ChevronLeft className="w-4 h-4" />
         </span>
         <span>Previous</span>
       </button>
@@ -44,6 +46,7 @@ export function Pagination({ page, totalPages, onPageChange }: PaginationProps) 
       </span>
 
       <button
+        type="button"
         disabled={page === totalPages}
         onClick={() => onPageChange(page + 1)}
         className="
@@ -67,10 +70,9 @@ export function Pagination({ page, totalPages, onPageChange }: PaginationProps) 
       >
         <span>Next</span>
         <span className="scale-75 sm:scale-100 flex-shrink-0">
-          <ChevronRightIcon />
+          <ChevronRight className="w-4 h-4" />
         </span>
       </button>
     </div>
   );
 }
-

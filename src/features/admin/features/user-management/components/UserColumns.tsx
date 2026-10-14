@@ -5,7 +5,7 @@ import { TableActionMenu } from "../../../../../components/table/TableActionMenu
 import { UserStatusBadge } from "./UserStatusBadge";
 import type { UserAction } from "./UsersActionModal";
 import { User, UserStatus } from "../interfaces/users.interfaces";
-import { VerifiedIcon } from "@/src/assets/icons";
+import { BadgeCheck } from "lucide-react";
 import Link from "next/link";
 
 export function getUserActions(user: User, onAction: (userId: string, action: UserAction) => void): ActionMenuItem[] {
@@ -90,7 +90,11 @@ export function buildUserColumns(
       align: "center",
       render: (user) => (
         <div className="flex items-center justify-center">
-          <VerifiedIcon filled={user.isEmailVerified} />
+          <BadgeCheck
+            className={`w-5 h-5 ${
+              user.isEmailVerified ? "text-[#005440]" : "text-gray-300"
+            }`}
+          />
         </div>
       ),
     },

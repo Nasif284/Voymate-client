@@ -1,11 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
 import Link from "next/link";
-import { arrowForward } from "@/src/assets/icons";
 import ModalLayout from "@/src/components/Modal";
 import CreateTrip from "../../trips/components/CreateTrip";
-import { Sparkles, MapPin, Luggage } from "lucide-react";
+import { Sparkles, MapPin, Luggage, ArrowRight } from "lucide-react";
 
 export default function DashboardStarterHub() {
   const [openModal, setOpenModal] = useState(false);
@@ -43,10 +42,10 @@ export default function DashboardStarterHub() {
             <div className="mt-6">
               <Link
                 href="/matches"
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#0f6e56] text-white font-bold text-xs sm:text-sm hover:bg-[#005440] transition-all cursor-pointer shadow-xs"
+                className="group inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#0f6e56] text-white font-bold text-xs sm:text-sm hover:bg-[#005440] transition-all cursor-pointer shadow-xs"
               >
                 <span>Explore Travelers</span>
-                {arrowForward}
+                <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
               </Link>
             </div>
           </div>
@@ -66,11 +65,12 @@ export default function DashboardStarterHub() {
             </div>
             <div className="mt-6">
               <button
+                type="button"
                 onClick={() => setOpenModal(true)}
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#005440] text-white font-bold text-xs sm:text-sm hover:bg-[#00382b] transition-all cursor-pointer shadow-xs"
+                className="group inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#005440] text-white font-bold text-xs sm:text-sm hover:bg-[#00382b] transition-all cursor-pointer shadow-xs"
               >
                 <span>Create a Trip</span>
-                {arrowForward}
+                <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
               </button>
             </div>
           </div>

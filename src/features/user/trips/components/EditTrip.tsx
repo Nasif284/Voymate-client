@@ -1,10 +1,11 @@
 "use client";
 
+import React from "react";
 import { useUpdateTripPlan } from "../hooks/trip.hooks";
 import { Trip } from "../interfaces/interface";
 import { EditTripFormData } from "../../onboarding/validators/editTrip.validator";
 import TripPlanForm from "./TripPlanForm";
-import { arrowForward } from "@/src/assets/icons";
+import { ArrowRight } from "lucide-react";
 
 export default function EditTrip({ onClose, trip }: Readonly<{ onClose: () => void; trip: Trip }>) {
   const updateTrip = useUpdateTripPlan();
@@ -38,7 +39,7 @@ export default function EditTrip({ onClose, trip }: Readonly<{ onClose: () => vo
       submitButtonText={
         <>
           Save Changes
-          {arrowForward}
+          <ArrowRight className="w-4 h-4" />
         </>
       }
       submitPendingText="Updating trip..."

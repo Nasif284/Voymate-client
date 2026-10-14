@@ -1,24 +1,35 @@
 "use client";
 
+import React, { useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useLogout } from "../features/user/auth/hooks/auth.hooks";
-import { AiAssistantIcon, ChatIcon, ConnectionsIcon, ExploreIcon, HeartIcon, HomeIcon, PersonIcon, SettingsIcon } from "../assets/icons";
-import { Users } from "lucide-react";
-import { useEffect } from "react";
+import {
+  Home,
+  Heart,
+  Users,
+  UserCheck,
+  Compass,
+  Sparkles,
+  MessageSquare,
+  User,
+  Settings,
+  LogOut,
+  X,
+} from "lucide-react";
 
 type NavItem = { href: string; label: string; icon: React.ReactNode };
 
 const NAV_ITEMS: NavItem[] = [
   {
-    href: "/",
+    href: "/home",
     label: "Home",
-    icon: <HomeIcon />,
+    icon: <Home className="w-5 h-5" />,
   },
   {
     href: "/matches",
     label: "Matches",
-    icon: <HeartIcon />,
+    icon: <Heart className="w-5 h-5" />,
   },
   {
     href: "/community-trips",
@@ -28,32 +39,32 @@ const NAV_ITEMS: NavItem[] = [
   {
     href: "/connections",
     label: "Connections",
-    icon: <ConnectionsIcon />,
+    icon: <UserCheck className="w-5 h-5" />,
   },
   {
     href: "/trips/plans/active",
     label: "Trips",
-    icon: <ExploreIcon />,
+    icon: <Compass className="w-5 h-5" />,
   },
   {
     href: "/ai-assistant",
     label: "AI Assistant",
-    icon: <AiAssistantIcon />,
+    icon: <Sparkles className="w-5 h-5" />,
   },
   {
     href: "/messages",
     label: "Messages",
-    icon: <ChatIcon />,
+    icon: <MessageSquare className="w-5 h-5" />,
   },
   {
     href: "/profile",
     label: "Profile",
-    icon: <PersonIcon />,
+    icon: <User className="w-5 h-5" />,
   },
   {
     href: "/settings",
     label: "Settings",
-    icon: <SettingsIcon />,
+    icon: <Settings className="w-5 h-5" />,
   },
 ];
 
@@ -76,7 +87,7 @@ export default function LeftSidebar({ mobileOpen = false, onMobileClose }: LeftS
     if (onMobileClose) {
       onMobileClose();
     }
-  }, [pathname]);
+  }, [pathname, onMobileClose]);
 
   // Lock body scroll when mobile drawer is open
   useEffect(() => {
@@ -97,19 +108,18 @@ export default function LeftSidebar({ mobileOpen = false, onMobileClose }: LeftS
         <div className="text-2xl font-black text-[#0F6E56] font-headline tracking-tight">Voymate</div>
         {onMobileClose && (
           <button
+            type="button"
             onClick={onMobileClose}
             aria-label="Close menu"
             className="lg:hidden p-2 rounded-full hover:bg-black/5 text-[#3f4944] active:scale-95 transition-all cursor-pointer min-w-[40px] min-h-[40px] flex items-center justify-center"
           >
-            <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
-              <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
-            </svg>
+            <X className="w-5 h-5" />
           </button>
         )}
       </div>
 
       {/* Navigation List Container with Hidden Scrollbar */}
-      <div 
+      <div
         className="mb-2 flex-grow overflow-y-auto hide-scrollbar"
         style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
       >
@@ -124,8 +134,8 @@ export default function LeftSidebar({ mobileOpen = false, onMobileClose }: LeftS
                 key={item.href}
                 href={item.href}
                 className={`flex items-center gap-3 py-2.5 px-3.5 sm:py-3 sm:px-4 rounded-xl font-headline font-bold text-sm tracking-tight transition-all active:scale-[0.98] ${
-                  active 
-                    ? "text-[#0F6E56] border-r-4 border-[#0F6E56] bg-white/70 shadow-xs" 
+                  active
+                    ? "text-[#0F6E56] border-r-4 border-[#0F6E56] bg-white/70 shadow-xs"
                     : "text-[#181d1a] opacity-75 hover:bg-[#e0e3e0] hover:opacity-100"
                 }`}
               >
@@ -140,9 +150,11 @@ export default function LeftSidebar({ mobileOpen = false, onMobileClose }: LeftS
       {/* Logout Action */}
       <div className="mt-auto pt-3 sm:pt-4">
         <button
+          type="button"
           onClick={handleLogout}
           className="w-full bg-[#0f6e56] text-white py-3 px-4 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-all active:scale-95 hover:bg-[#005440] shadow-sm cursor-pointer"
         >
+          <LogOut className="w-4 h-4" />
           Logout
         </button>
       </div>
@@ -171,5 +183,3 @@ export default function LeftSidebar({ mobileOpen = false, onMobileClose }: LeftS
     </>
   );
 }
-
-

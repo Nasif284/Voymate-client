@@ -1,43 +1,22 @@
 "use client";
 
 import { useState } from "react";
-import { UserWithDetails } from "../../../../Interfaces/users.interface";
 import Link from "next/link";
-import { LocationIcon } from "@/src/assets/icons";
+import { UserWithDetails } from "../../../../Interfaces/users.interface";
 import MessageButton from "../../chat/components/MessageButton";
-import {
-  useAcceptRequest,
-  useGetAllRequests,
-  useGetConnections,
-  useSendConnectionRequest,
-} from "../hooks/connection.hooks";
 import { BuddyRequestModal } from "../../profile/components/BuddyRequestModal";
-import { RequestData } from "../../profile/interfaces/profile.interface";
+import { useConnectionStatus } from "../hooks/useConnectionStatus";
+import { formatDateRange } from "@/src/utils/date";
 import {
   Calendar,
   Luggage,
   UserCheck,
   UserPlus,
   Clock,
+  MapPin,
+  MessageSquare,
+  Check,
 } from "lucide-react";
-
-const formatDateRange = (from?: Date | string, to?: Date | string) => {
-  if (!from) return "";
-  const dFrom = new Date(from);
-  const dTo = to ? new Date(to) : null;
-  if (isNaN(dFrom.getTime())) return "";
-
-  const fromMonth = dFrom.toLocaleDateString("en-US", { month: "short" });
-  const fromDay = dFrom.getDate();
-  if (!dTo || isNaN(dTo.getTime())) return `${fromMonth} ${fromDay}`;
-
-  const toMonth = dTo.toLocaleDateString("en-US", { month: "short" });
-  const toDay = dTo.getDate();
-  if (fromMonth === toMonth) {
-    return `${fromMonth} ${fromDay} - ${toDay}`;
-  }
-  return `${fromMonth} ${fromDay} - ${toMonth} ${toDay}`;
-};
 
 export interface TravelerCardProps {
   readonly traveler: UserWithDetails;
@@ -58,48 +37,32 @@ export default function TravelerCard({
   dateRange,
   matchScore,
   profileUrl,
-  mode = "TRIP",
   requestId,
-  connectionStatus,
+  connectionStatus: propConnectionStatus,
 }: TravelerCardProps) {
   const [showBuddyRequestModal, setShowBuddyRequestModal] = useState(false);
-  const requestMutation = useSendConnectionRequest();
-  const acceptMutation = useAcceptRequest();
-  const { data: requestsRes } = useGetAllRequests();
-  const { data: connectionsRes } = useGetConnections();
+
+  const {
+    isConnected: hookConnected,
+    isRequestReceived: hookReceived,
+    isRequestSent: hookSent,
+    existingRequest,
+    acceptRequest,
+    sendRequest,
+  } = useConnectionStatus(traveler.id);
 
   const isConnected =
-    connectionStatus === "CONNECTED" ||
-    Boolean(
-      connectionsRes?.data?.connections?.some(
-        (c: { id: string }) => c.id === traveler.id
-      )
-    );
+    propConnectionStatus === "CONNECTED" || hookConnected;
 
-  const existingReq = requestsRes?.data?.requests?.find(
-    (e: RequestData) =>
-      e.senderId === traveler?.id || e.receiverId === traveler?.id
-  );
+  const isRequestReceived =
+    !isConnected &&
+    (propConnectionStatus === "REQUEST_RECEIVED" || hookReceived);
 
-  let isRequestReceived = false;
-  let isRequestSent = false;
-  let targetRequestId: string | undefined = requestId;
+  const isRequestSent =
+    !isConnected &&
+    (propConnectionStatus === "REQUEST_SENT" || hookSent);
 
-  if (existingReq && !isConnected) {
-    if (existingReq.senderId === traveler?.id) {
-      isRequestReceived = true;
-      targetRequestId = existingReq.id;
-    } else {
-      isRequestSent = true;
-      targetRequestId = existingReq.id;
-    }
-  } else if (!isConnected) {
-    if (connectionStatus === "REQUEST_RECEIVED") {
-      isRequestReceived = true;
-    } else if (connectionStatus === "REQUEST_SENT") {
-      isRequestSent = true;
-    }
-  }
+  const targetRequestId = requestId || existingRequest?.id;
 
   const travelDateRange = dateRange?.from
     ? formatDateRange(dateRange.from, dateRange.to)
@@ -139,25 +102,7 @@ export default function TravelerCard({
             </div>
           ) : isNearBy && traveler.distanceKm != null ? (
             <div className="absolute top-1.5 left-1.5 sm:top-3 sm:left-3 bg-black/60 text-white text-[8px] sm:text-[11px] font-semibold px-1.5 py-0.5 sm:px-2.5 sm:py-1 rounded-full backdrop-blur-md shadow-xs flex items-center gap-1 z-10 max-w-[60%] truncate">
-              <svg
-                className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-white flex-shrink-0"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                />
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                />
-              </svg>
+              <MapPin className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-white flex-shrink-0" />
               <span className="truncate">{traveler.distanceKm} km away</span>
             </div>
           ) : isConnected ? (
@@ -204,6 +149,7 @@ export default function TravelerCard({
             </div>
           ) : null}
 
+          {/* Avatar floating */}
           <div className="absolute bottom-0 left-2 sm:left-6 translate-y-1/2 z-10">
             <Link href={effectiveProfileUrl}>
               <div className="h-10 w-10 sm:h-16 sm:w-16 rounded-full border-2 sm:border-4 border-white overflow-hidden shadow-md bg-white hover:scale-105 transition-transform cursor-pointer">
@@ -228,10 +174,8 @@ export default function TravelerCard({
               </h2>
             </Link>
 
-            <p className="text-[9px] sm:text-xs text-[#3f4944] flex items-center gap-0.5 mt-0.5 truncate">
-              <span className="w-3 h-3 sm:w-3.5 sm:h-3.5 flex-shrink-0 flex items-center justify-center text-[#3f4944] scale-90 sm:scale-100">
-                <LocationIcon />
-              </span>
+            <p className="text-[9px] sm:text-xs text-[#3f4944] flex items-center gap-1 mt-0.5 truncate">
+              <MapPin className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[#3f4944] shrink-0" />
               <span className="truncate">
                 {traveler.state}, {traveler.country}
               </span>
@@ -251,7 +195,7 @@ export default function TravelerCard({
             </div>
           )}
 
-          {/* Interests Tags - Capitalized (Title Case) with +N Badge on Mobile & Desktop */}
+          {/* Interests Tags */}
           {traveler.interests && traveler.interests.length > 0 && (
             <div className="flex items-center gap-1 my-1 sm:mb-3 sm:mt-1 flex-nowrap overflow-hidden">
               {traveler.interests.slice(0, 2).map((tag) => (
@@ -271,7 +215,6 @@ export default function TravelerCard({
           )}
 
           <div className="mt-auto flex gap-2 pt-1 sm:pt-2">
-            {/* Profile button - visible only on desktop / sm screens */}
             <Link
               href={effectiveProfileUrl}
               className="hidden sm:flex flex-1 items-center justify-center min-h-[40px] text-center text-xs font-bold text-[#005440] hover:bg-[#e5e9e5] rounded-xl transition-colors border border-[#bec9c3]/30 px-2"
@@ -285,45 +228,21 @@ export default function TravelerCard({
                 userId={traveler.id}
                 className="w-full sm:flex-1 h-7 sm:h-10 min-h-[26px] sm:min-h-[40px] text-[9px] sm:text-xs font-bold bg-[#0f6e56] text-white rounded-md sm:rounded-xl hover:bg-[#005440] transition-all active:scale-95 cursor-pointer shadow-xs flex items-center justify-center gap-1 sm:gap-1.5 px-1.5 sm:px-2"
               >
-                <svg
-                  width="12"
-                  height="12"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="shrink-0"
-                >
-                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-                </svg>
+                <MessageSquare className="w-3 h-3 shrink-0" />
                 <span>Message</span>
               </MessageButton>
             ) : isRequestReceived ? (
               <button
                 onClick={() => {
                   if (targetRequestId) {
-                    acceptMutation.mutate(targetRequestId);
+                    acceptRequest.mutate(targetRequestId);
                   }
                 }}
-                disabled={acceptMutation.isPending}
+                disabled={acceptRequest.isPending}
                 className="w-full sm:flex-1 h-7 sm:h-10 min-h-[26px] sm:min-h-[40px] text-[9px] sm:text-xs font-bold bg-[#005440] text-white rounded-md sm:rounded-xl hover:bg-[#0f6e56] transition-all active:scale-95 cursor-pointer shadow-xs flex items-center justify-center gap-1 sm:gap-1.5 px-1.5 sm:px-2"
               >
-                <svg
-                  className="w-3 h-3 text-white flex-shrink-0"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  strokeWidth="2.5"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M5 13l4 4L19 7"
-                  />
-                </svg>
-                <span>{acceptMutation.isPending ? "Accepting..." : "Accept"}</span>
+                <Check className="w-3 h-3 text-white flex-shrink-0" />
+                <span>{acceptRequest.isPending ? "Accepting..." : "Accept"}</span>
               </button>
             ) : isRequestSent ? (
               <button
@@ -334,24 +253,18 @@ export default function TravelerCard({
               </button>
             ) : (
               <button
-                onClick={() => {
-                  setShowBuddyRequestModal(true);
-                }}
-                disabled={requestMutation.isPending}
+                onClick={() => setShowBuddyRequestModal(true)}
+                disabled={sendRequest.isPending}
                 className="w-full sm:flex-1 h-7 sm:h-10 min-h-[26px] sm:min-h-[40px] text-[9px] sm:text-xs font-bold bg-[#0f6e56] text-white rounded-md sm:rounded-xl hover:bg-[#005440] transition-all active:scale-95 cursor-pointer shadow-xs flex items-center justify-center gap-1 sm:gap-1.5 px-1.5 sm:px-2 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                <svg
-                  className="w-2.5 h-2.5 sm:w-3.5 sm:h-3.5 fill-current flex-shrink-0"
-                  viewBox="0 0 24 24"
-                >
-                  <path d="M15 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm-9-2V8H4v2H2v2h2v2h2v-2h2v-2H6zm9 4c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
-                </svg>
-                <span>{requestMutation.isPending ? "Sending..." : "Request"}</span>
+                <UserPlus className="w-3 h-3 text-white flex-shrink-0" />
+                <span>{sendRequest.isPending ? "Sending..." : "Request"}</span>
               </button>
             )}
           </div>
         </div>
       </div>
+
       <BuddyRequestModal
         isOpen={showBuddyRequestModal}
         onClose={() => setShowBuddyRequestModal(false)}
@@ -360,7 +273,7 @@ export default function TravelerCard({
           avatarUrl: traveler.avatarUrl,
         }}
         onSend={(message: string) => {
-          requestMutation.mutate({
+          sendRequest.mutate({
             receiverId: traveler.id,
             message,
           });

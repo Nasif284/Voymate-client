@@ -4,26 +4,8 @@ import Link from "next/link";
 import { useGetBuddiesUpcomingTrips } from "../hooks/matches.hooks";
 import { BuddyUpcomingTrip } from "../interfaces/profile-listing.interface";
 import MessageButton from "../../chat/components/MessageButton";
-import { LocationIcon } from "@/src/assets/icons";
+import { formatDateRange } from "@/src/utils/date";
 import { Luggage, Calendar, MapPin, Plane } from "lucide-react";
-
-const formatDateRange = (from?: Date | string, to?: Date | string) => {
-  if (!from) return "";
-  const dFrom = new Date(from);
-  const dTo = to ? new Date(to) : null;
-  if (isNaN(dFrom.getTime())) return "";
-
-  const fromMonth = dFrom.toLocaleDateString("en-US", { month: "short" });
-  const fromDay = dFrom.getDate();
-  if (!dTo || isNaN(dTo.getTime())) return `${fromMonth} ${fromDay}`;
-
-  const toMonth = dTo.toLocaleDateString("en-US", { month: "short" });
-  const toDay = dTo.getDate();
-  if (fromMonth === toMonth) {
-    return `${fromMonth} ${fromDay} - ${toDay}`;
-  }
-  return `${fromMonth} ${fromDay} - ${toMonth} ${toDay}`;
-};
 
 export default function BuddiesUpcomingTrips() {
   const { data, isLoading } = useGetBuddiesUpcomingTrips();
@@ -124,9 +106,7 @@ export default function BuddiesUpcomingTrips() {
                     </h3>
                   </Link>
                   <p className="text-[10px] sm:text-xs text-[#0f6e56] font-semibold flex items-center gap-1 mt-0.5 truncate">
-                    <span className="w-3 h-3 flex-shrink-0 flex items-center justify-center scale-90">
-                      <LocationIcon />
-                    </span>
+                    <MapPin className="w-3 h-3 flex-shrink-0 text-[#0f6e56]" />
                     <span className="truncate">Heading to {trip.destination.name.split(",")[0]}</span>
                   </p>
                 </div>

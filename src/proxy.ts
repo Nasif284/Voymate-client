@@ -12,13 +12,24 @@ export function proxy(request: NextRequest) {
   const isAdminAuth = pathname === "/admin/login";
 
   const isAdminRoute = pathname.startsWith("/admin");
-  const isUserProtected = pathname === "/" || pathname.startsWith("/profile") || pathname.startsWith("/trips") || pathname.startsWith("/chat");
+  const isUserProtected =
+    pathname.startsWith("/home") ||
+    pathname.startsWith("/profile") ||
+    pathname.startsWith("/trips") ||
+    pathname.startsWith("/chat") ||
+    pathname.startsWith("/messages") ||
+    pathname.startsWith("/matches") ||
+    pathname.startsWith("/connections") ||
+    pathname.startsWith("/ai-assistant");
 
   if (pathname == "/admin") {
     return NextResponse.redirect(new URL("/admin/dashboard", request.url));
   }
   if (isUserAuth && userRefreshToken) {
-    return NextResponse.redirect(new URL("/", request.url));
+    return NextResponse.redirect(new URL("/home", request.url));
+  }
+  if (pathname === "/" && userRefreshToken) {
+    return NextResponse.redirect(new URL("/home", request.url));
   }
 
   if (isAdminAuth && adminRefreshToken) {

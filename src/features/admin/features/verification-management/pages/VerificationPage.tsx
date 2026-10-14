@@ -1,10 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { DUMMY_DETAIL, DUMMY_QUEUE, STATUS_FILTERS } from "../utils/data";
+import { STATUS_FILTERS } from "../utils/data";
 import QueueCard from "../components/QueueCard";
 import VerificationDetail from "../components/VerificationsDetails";
-import { Icons } from "../utils/icons";
+import { CreditCard, Eye, Search } from "lucide-react";
 import { useApproveVerification, useGetVerificationDetails, useGetVerificationQueue, useRejectVerification, useRequestResubmission } from "../hooks/hooks";
 import { StatusCode, VerificationQueueItemDTO } from "../interfaces/interfaces";
 
@@ -58,7 +58,9 @@ export default function AdminVerificationsPage() {
 
           {/* Search */}
           <div className="relative">
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#6f7a74]">{Icons.search}</span>
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#6f7a74]">
+              <Search className="w-4 h-4" />
+            </span>
             <input type="text" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search by name or email..." className="w-full pl-9 pr-3 py-2 bg-white border border-[#bec9c3]/30 rounded-lg text-xs focus:ring-2 focus:ring-[#005440]/20 focus:border-[#005440] outline-none transition-all placeholder:text-[#bec9c3] text-[#1c1c1a]" />
           </div>
 
@@ -81,7 +83,9 @@ export default function AdminVerificationsPage() {
         <div className="flex-1 overflow-y-auto p-3 space-y-2 [&::-webkit-scrollbar]:hidden">
           {queueItems.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-16 text-[#6f7a74]">
-              <div className="w-12 h-12 bg-[#e5e2de] rounded-full flex items-center justify-center mb-3 opacity-40">{Icons.id}</div>
+              <div className="w-12 h-12 bg-[#e5e2de] rounded-full flex items-center justify-center mb-3 opacity-40">
+                <CreditCard className="w-6 h-6" />
+              </div>
               <p className="text-sm font-bold opacity-40">No verifications found</p>
             </div>
           ) : (
@@ -96,7 +100,9 @@ export default function AdminVerificationsPage() {
           <VerificationDetail detail={detail} onApprove={handleApprove} onReject={handleReject} onRequestResubmit={handleRequestResubmit} isActioning={requestResubmission.isPending || reject.isPending || approve.isPending} />
         ) : (
           <div className="flex-1 flex flex-col items-center justify-center text-[#6f7a74]">
-            <div className="w-20 h-20 bg-[#e5e2de] rounded-full flex items-center justify-center mb-4 opacity-30">{Icons.eye}</div>
+            <div className="w-20 h-20 bg-[#e5e2de] rounded-full flex items-center justify-center mb-4 opacity-30">
+              <Eye className="w-10 h-10" />
+            </div>
             <p className="text-lg font-bold opacity-40">Select a verification</p>
             <p className="text-sm opacity-30 mt-1">Choose an item from the queue to review it</p>
           </div>

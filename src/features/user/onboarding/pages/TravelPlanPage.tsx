@@ -1,9 +1,10 @@
 "use client";
 
+import React from "react";
 import { useCreateOnboardingTripPlan } from "../hooks/onboarding.hooks";
 import { CreateTripFormData } from "../validators/tripPlan.validator";
 import TripPlanForm from "../../trips/components/TripPlanForm";
-import { arrowForward } from "@/src/assets/icons";
+import { ArrowRight } from "lucide-react";
 
 export default function TravelPlanPage() {
   const tripPlan = useCreateOnboardingTripPlan();
@@ -47,7 +48,7 @@ export default function TravelPlanPage() {
           submitButtonText={
             <>
               Create my plan
-              {arrowForward}
+              <ArrowRight className="w-4 h-4" />
             </>
           }
         />

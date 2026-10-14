@@ -2,14 +2,13 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { AddCircleIcon, ArrowLeftIcon, SendIcon, SmileIcon } from "../utils/icons";
+import { ArrowLeft, PlusCircle, Send, Smile, Sparkles } from "lucide-react";
 import Avatar from "./Avatar";
 import MessageBubble from "./MessageBubble";
 import CallSections from "./CallSections";
 import EmojiPicker from "./EmojiPicker";
 import { ChatMessageDTO, Conversation } from "../interfaces/interface";
 import { markConversationAsRead } from "@/src/socket/chat/chat.socket";
-import { Sparkles } from "lucide-react";
 
 function formatLastSeen(dateString?: string) {
   if (!dateString) return "recently";
@@ -100,7 +99,7 @@ export default function ChatSection({
         <div className="flex flex-1 items-center justify-center p-8">
           <div className="max-w-sm text-center">
             <div className="mx-auto mb-5 flex h-20 w-20 items-center justify-center rounded-full bg-[#005440]/10 text-[#005440]">
-              <SendIcon />
+              <Send className="w-9 h-9" />
             </div>
             <h2 className="text-xl font-bold text-[#181d1a]">Select a conversation</h2>
             <p className="mt-2 text-sm leading-relaxed text-[#404944]">
@@ -120,7 +119,7 @@ export default function ChatSection({
                 className="lg:hidden rounded-xl p-2 text-[#404944] hover:bg-[#f1f4f1] transition-colors"
                 aria-label="Back to messages"
               >
-                <ArrowLeftIcon />
+                <ArrowLeft className="h-5 w-5" />
               </button>
 
               <Avatar avatar={activeConversation.user.profileImage ?? ""} name={activeConversation.user.name} online={isOnline} size="md" />
@@ -203,7 +202,7 @@ export default function ChatSection({
                 onClick={() => setShowEmojiPicker((prev) => !prev)}
                 className={`p-2 transition-colors rounded-xl ${showEmojiPicker ? "text-[#005440] bg-[#005440]/10" : "text-[#707973] hover:text-[#005440]"}`}
               >
-                <SmileIcon />
+                <Smile className="h-5 w-5" />
               </button>
 
               <button
@@ -216,7 +215,7 @@ export default function ChatSection({
                 {isUploadingImage ? (
                   <div className="h-5 w-5 animate-spin rounded-full border-2 border-[#005440]/20 border-t-[#005440]" />
                 ) : (
-                  <AddCircleIcon />
+                  <PlusCircle className="h-5 w-5" />
                 )}
               </button>
 
@@ -241,7 +240,7 @@ export default function ChatSection({
                 aria-label="Send message"
                 className="rounded-xl bg-[#005440] p-2.5 text-white transition-all hover:bg-[#003e2f] active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed shadow-xs shrink-0"
               >
-                <SendIcon />
+                <Send className="h-5 w-5" />
               </button>
             </div>
           </footer>

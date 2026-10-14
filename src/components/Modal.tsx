@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, ReactNode } from "react";
-import { close } from "@/src/assets/icons";
+import { X } from "lucide-react";
 
 interface ModalLayoutProps {
   isOpen: boolean;
@@ -80,7 +80,7 @@ export default function ModalLayout({ isOpen, title, size = "lg", onClose, child
                 "
                 aria-label="Close modal"
               >
-                {close}
+                <X className="w-5 h-5" />
               </button>
             </div>
           </div>

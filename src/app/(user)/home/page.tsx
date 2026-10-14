@@ -1,10 +1,10 @@
 "use client";
 
-import RightSidebar from "../../components/RightSide";
-import NearbyTravelers from "../../features/user/matches-connections/components/NearbyTravelers";
-import BuddiesUpcomingTrips from "../../features/user/matches-connections/components/BuddiesUpcomingTrips";
-import TripMatchesSection from "../../features/user/matches-connections/components/TripMatchesSection";
-import DiscoverBuddiesSection from "../../features/user/matches-connections/components/DiscoverBuddiesSection";
+import RightSidebar from "@/src/components/RightSide";
+import NearbyTravelers from "@/src/features/user/matches-connections/components/NearbyTravelers";
+import BuddiesUpcomingTrips from "@/src/features/user/matches-connections/components/BuddiesUpcomingTrips";
+import TripMatchesSection from "@/src/features/user/matches-connections/components/TripMatchesSection";
+import DiscoverBuddiesSection from "@/src/features/user/matches-connections/components/DiscoverBuddiesSection";
 import {
   useGetActiveTrip,
   useGetBuddiesUpcomingTrips,

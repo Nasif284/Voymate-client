@@ -1,7 +1,7 @@
 "use client";
 
 import { useDeclineCall, useJoinCall } from "@/src/features/user/call/hooks/hooks";
-import { CallIcon, VideoIcon } from "@/src/features/user/chat/utils/icons";
+import { Phone, Video } from "lucide-react";
 import { useCallStore } from "@/src/store/call.store";
 
 export default function IncomingCallModal() {
@@ -56,7 +56,7 @@ export default function IncomingCallModal() {
               )}
             </div>
             <span className="absolute bottom-1 right-1 flex h-8 w-8 items-center justify-center rounded-full bg-[#005440] text-white border-2 border-[#181d1a]">
-              {incomingCall.mediaType === "VIDEO" ? <VideoIcon /> : <CallIcon />}
+              {incomingCall.mediaType === "VIDEO" ? <Video className="w-4 h-4" /> : <Phone className="w-4 h-4" />}
             </span>
           </div>
 

@@ -5,7 +5,7 @@ import { useGetPlacesSuggestion } from "../hooks/onboarding.hooks";
 import { useDebounce } from "@/src/hooks/debounce.hook";
 import { useState } from "react";
 import { onboardingService } from "../services/onboarding.service";
-import { locationPin } from "@/src/assets/icons";
+import { MapPin } from "lucide-react";
 
 interface Props {
   value: string;
@@ -48,7 +48,7 @@ export default function DestinationAutocomplete({ value, onChange, onSelect }: P
   return (
     <div className="relative group">
       <div className="absolute inset-y-0 left-3 sm:left-4 flex items-center pointer-events-none text-[#3f4944] group-focus-within:text-[#005440] transition-colors z-10">
-        {locationPin}
+        <MapPin className="w-4 h-4 sm:w-5 sm:h-5" />
       </div>
       <input
         value={value}
@@ -75,7 +75,7 @@ export default function DestinationAutocomplete({ value, onChange, onSelect }: P
             onClick={() => handleSelect(suggestion)}
             className="w-full text-left px-4 py-3 text-xs sm:text-sm text-[#181d1a] font-medium hover:bg-[#eef8f4] hover:text-[#005440] transition-colors flex items-center gap-2.5"
           >
-            <span className="text-[#005440] shrink-0">{locationPin}</span>
+            <MapPin className="w-4 h-4 text-[#005440] shrink-0" />
             <span className="truncate">{suggestion.placePrediction.text.text}</span>
           </button>
         </div>

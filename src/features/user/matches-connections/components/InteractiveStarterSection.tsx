@@ -1,11 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
 import Link from "next/link";
-import { arrowForward } from "@/src/assets/icons";
 import ModalLayout from "@/src/components/Modal";
 import CreateTrip from "../../trips/components/CreateTrip";
-import { Luggage, Plane, MapPin, Sparkles } from "lucide-react";
+import { Luggage, MapPin, Sparkles, ArrowRight } from "lucide-react";
 
 interface InteractiveStarterSectionProps {
   readonly activeSectionType?: "NEARBY" | "BUDDIES" | "TRIP_MATCHES";
@@ -73,15 +72,16 @@ export default function InteractiveStarterSection({
                   className="inline-flex items-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 rounded-xl bg-[#0f6e56] text-white font-bold text-xs sm:text-sm hover:bg-[#005440] transition-all active:scale-95 shadow-xs cursor-pointer"
                 >
                   <span>{config.buttonText}</span>
-                  {arrowForward}
+                  <ArrowRight className="w-4 h-4" />
                 </Link>
               ) : (
                 <button
+                  type="button"
                   onClick={config.action}
                   className="inline-flex items-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 rounded-xl bg-[#0f6e56] text-white font-bold text-xs sm:text-sm hover:bg-[#005440] transition-all active:scale-95 shadow-xs cursor-pointer"
                 >
                   <span>{config.buttonText}</span>
-                  {arrowForward}
+                  <ArrowRight className="w-4 h-4" />
                 </button>
               )}
             </div>

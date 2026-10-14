@@ -1,9 +1,10 @@
 "use client";
 
+import React from "react";
 import { useCreateTripPlan } from "../hooks/trip.hooks";
 import { CreateTripFormData } from "../../onboarding/validators/tripPlan.validator";
 import TripPlanForm from "./TripPlanForm";
-import { arrowForward } from "@/src/assets/icons";
+import { ArrowRight } from "lucide-react";
 
 export default function CreateTrip({ onClose }: Readonly<{ onClose: () => void }>) {
   const tripPlan = useCreateTripPlan();
@@ -39,7 +40,7 @@ export default function CreateTrip({ onClose }: Readonly<{ onClose: () => void }
       submitButtonText={
         <>
           Create my plan &amp; find mates
-          {arrowForward}
+          <ArrowRight className="w-4 h-4" />
         </>
       }
       submitPendingText="Creating trip plan..."

@@ -5,8 +5,7 @@ import { useGetConnections } from "../../matches-connections/hooks/connection.ho
 import { Connection } from "../../matches-connections/interfaces/profile-listing.interface";
 import Avatar from "./Avatar";
 import MessageButton from "./MessageButton";
-import { SearchIcon } from "../utils/icons";
-import { X } from "lucide-react";
+import { Search, X } from "lucide-react";
 
 interface NewConversationModalProps {
   isOpen: boolean;
@@ -70,7 +69,7 @@ export default function NewConversationModal({ isOpen, onClose }: NewConversatio
         {/* Search Bar */}
         <div className="p-4 border-b border-[#bec9c3]/15 bg-white">
           <div className="relative">
-            <SearchIcon className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[#707973]" />
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[#707973]" />
             <input
               type="text"
               value={search}

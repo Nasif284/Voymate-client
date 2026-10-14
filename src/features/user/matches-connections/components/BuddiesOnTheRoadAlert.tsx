@@ -1,28 +1,11 @@
 "use client";
 
+import React from "react";
 import Link from "next/link";
 import { TripMatchData } from "../interfaces/profile-listing.interface";
 import MessageButton from "../../chat/components/MessageButton";
-import { LocationIcon } from "@/src/assets/icons";
-import { Luggage, Calendar } from "lucide-react";
-
-const formatDateRange = (from?: Date | string, to?: Date | string) => {
-  if (!from) return "";
-  const dFrom = new Date(from);
-  const dTo = to ? new Date(to) : null;
-  if (isNaN(dFrom.getTime())) return "";
-
-  const fromMonth = dFrom.toLocaleDateString("en-US", { month: "short" });
-  const fromDay = dFrom.getDate();
-  if (!dTo || isNaN(dTo.getTime())) return `${fromMonth} ${fromDay}`;
-
-  const toMonth = dTo.toLocaleDateString("en-US", { month: "short" });
-  const toDay = dTo.getDate();
-  if (fromMonth === toMonth) {
-    return `${fromMonth} ${fromDay} - ${toDay}`;
-  }
-  return `${fromMonth} ${fromDay} - ${toMonth} ${toDay}`;
-};
+import { Luggage, Calendar, MapPin, MessageSquare } from "lucide-react";
+import { formatDateRange } from "@/src/utils/date";
 
 export default function BuddiesOnTheRoadAlert({
   buddies,
@@ -110,9 +93,7 @@ export default function BuddiesOnTheRoadAlert({
                   </div>
 
                   <p className="text-[10px] sm:text-xs text-white/75 flex items-center gap-1 mt-0.5 truncate">
-                    <span className="w-3 h-3 flex-shrink-0 flex items-center justify-center">
-                      <LocationIcon />
-                    </span>
+                    <MapPin className="w-3 h-3 text-[#a0f3d4] shrink-0" />
                     <span className="truncate">
                       {match.destination || `${traveler.state}, ${traveler.country}`}
                     </span>
@@ -140,19 +121,7 @@ export default function BuddiesOnTheRoadAlert({
                   userId={traveler.id}
                   className="flex-1 py-1.5 sm:py-2 px-2 text-center text-[10px] sm:text-xs font-bold text-[#004736] bg-[#a0f3d4] hover:bg-[#85eec5] rounded-lg sm:rounded-xl transition-all shadow-xs flex items-center justify-center gap-1.5 active:scale-95 cursor-pointer"
                 >
-                  <svg
-                    width="12"
-                    height="12"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="shrink-0"
-                  >
-                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-                  </svg>
+                  <MessageSquare className="w-3 h-3 shrink-0" />
                   <span>Message</span>
                 </MessageButton>
               </div>

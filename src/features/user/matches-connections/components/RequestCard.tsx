@@ -1,7 +1,7 @@
-import { LocationIcon } from "@/src/assets/icons";
-import { ConnectionRequest } from "../../profile/interfaces/profile.interface";
+import React from "react";
 import Link from "next/link";
-import { Check } from "lucide-react";
+import { Check, MapPin } from "lucide-react";
+import { ConnectionRequest } from "../../profile/interfaces/profile.interface";
 
 interface RequestCardProps {
   request: ConnectionRequest;
@@ -22,23 +22,39 @@ export default function RequestCard({ request, onAccept, onDecline }: RequestCar
     >
       {/* Profile Header */}
       <div className="w-full sm:w-44 flex-shrink-0 flex flex-row sm:flex-col items-center sm:text-center gap-3 border-b sm:border-b-0 border-[#bec9c3]/20 pb-3 sm:pb-0">
-        <img src={request.sender.avatarUrl!} alt={request.sender.fullName} className="w-12 h-12 sm:w-20 sm:h-20 rounded-full object-cover shadow-sm shrink-0" />
+        <img
+          src={request.sender.avatarUrl!}
+          alt={request.sender.fullName}
+          className="w-12 h-12 sm:w-20 sm:h-20 rounded-full object-cover shadow-sm shrink-0"
+        />
         <div className="flex-1 sm:flex-initial text-left sm:text-center min-w-0">
-          <h3 className="font-bold text-[#181d1a] font-headline text-xs sm:text-sm truncate">{request.sender.fullName}</h3>
+          <h3 className="font-bold text-[#181d1a] font-headline text-xs sm:text-sm truncate">
+            {request.sender.fullName}
+          </h3>
           <p className="text-[11px] sm:text-xs text-[#3f4944] flex items-center justify-start sm:justify-center gap-0.5 mt-0.5 truncate">
-            <LocationIcon />
+            <MapPin className="w-3.5 h-3.5 text-[#3f4944] shrink-0" />
             <span className="truncate">{request.sender.state}, {request.sender.country}</span>
           </p>
         </div>
-        {isAccepted && <span className="text-[9px] sm:text-[10px] font-bold uppercase bg-[#c9eadb] text-[#005440] px-2 py-0.5 sm:py-1 rounded-full shrink-0">Accepted</span>}
-        {isDeclined && <span className="text-[9px] sm:text-[10px] font-bold uppercase bg-[#e0e3e0] text-[#6f7a74] px-2 py-0.5 sm:py-1 rounded-full shrink-0">Declined</span>}
+        {isAccepted && (
+          <span className="text-[9px] sm:text-[10px] font-bold uppercase bg-[#c9eadb] text-[#005440] px-2 py-0.5 sm:py-1 rounded-full shrink-0">
+            Accepted
+          </span>
+        )}
+        {isDeclined && (
+          <span className="text-[9px] sm:text-[10px] font-bold uppercase bg-[#e0e3e0] text-[#6f7a74] px-2 py-0.5 sm:py-1 rounded-full shrink-0">
+            Declined
+          </span>
+        )}
       </div>
 
       {/* Message & Actions */}
       <div className="flex-1 flex flex-col justify-between">
         <div>
           <div className="flex justify-between items-start mb-1.5">
-            <span className="text-[9px] sm:text-[10px] uppercase font-bold text-[#3f4944]/60 tracking-wider">Message</span>
+            <span className="text-[9px] sm:text-[10px] uppercase font-bold text-[#3f4944]/60 tracking-wider">
+              Message
+            </span>
             <span className="text-[9px] sm:text-[10px] text-[#3f4944]/40">
               {new Date(request.createdAt).toLocaleDateString("en-US", {
                 day: "2-digit",
@@ -46,7 +62,9 @@ export default function RequestCard({ request, onAccept, onDecline }: RequestCar
               })}
             </span>
           </div>
-          <p className="text-[#181d1a] leading-relaxed italic text-xs sm:text-sm">&ldquo;{request.message}&rdquo;</p>
+          <p className="text-[#181d1a] leading-relaxed italic text-xs sm:text-sm">
+            &ldquo;{request.message}&rdquo;
+          </p>
         </div>
 
         <div className="flex gap-2 sm:gap-3 mt-4 sm:mt-6">
@@ -57,10 +75,15 @@ export default function RequestCard({ request, onAccept, onDecline }: RequestCar
             View Profile
           </Link>
           <button
+            type="button"
             onClick={() => onAccept(request.id)}
             disabled={isActioned}
             className={`flex-1 h-9 sm:h-11 font-bold rounded-lg sm:rounded-xl text-xs sm:text-sm transition-all active:scale-[0.98] cursor-pointer
-              ${isAccepted ? "bg-[#c9eadb] text-[#005440] cursor-default" : "bg-[#005440] text-white hover:bg-[#0f6e56] disabled:opacity-50 disabled:cursor-not-allowed"}`}
+              ${
+                isAccepted
+                  ? "bg-[#c9eadb] text-[#005440] cursor-default"
+                  : "bg-[#005440] text-white hover:bg-[#0f6e56] disabled:opacity-50 disabled:cursor-not-allowed"
+              }`}
           >
             {isAccepted ? (
               <span className="inline-flex items-center justify-center gap-1">
@@ -72,10 +95,15 @@ export default function RequestCard({ request, onAccept, onDecline }: RequestCar
             )}
           </button>
           <button
+            type="button"
             onClick={() => onDecline(request.id)}
             disabled={isActioned}
             className={`flex-1 h-9 sm:h-11 font-bold rounded-lg sm:rounded-xl text-xs sm:text-sm transition-all active:scale-[0.98] cursor-pointer
-              ${isDeclined ? "bg-[#e0e3e0] text-[#6f7a74] cursor-default" : "bg-[#ebefeb] text-[#005440] hover:bg-[#e0e3e0] disabled:opacity-50 disabled:cursor-not-allowed"}`}
+              ${
+                isDeclined
+                  ? "bg-[#e0e3e0] text-[#6f7a74] cursor-default"
+                  : "bg-[#ebefeb] text-[#005440] hover:bg-[#e0e3e0] disabled:opacity-50 disabled:cursor-not-allowed"
+              }`}
           >
             {isDeclined ? "Declined" : "Decline"}
           </button>
@@ -84,4 +112,3 @@ export default function RequestCard({ request, onAccept, onDecline }: RequestCar
     </div>
   );
 }
-

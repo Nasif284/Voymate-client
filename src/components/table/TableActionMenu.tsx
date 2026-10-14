@@ -1,8 +1,8 @@
 "use client";
 
-import { MoreVertIcon } from "@/src/assets/icons";
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import { MoreVertical } from "lucide-react";
 
 export interface ActionMenuItem {
   label: string;
@@ -87,18 +87,21 @@ export function TableActionMenu({ rowId, openId, onToggle, items }: TableActionM
             {items.map((item, i) => (
               <button
                 key={i}
+                type="button"
                 onClick={(e) => {
                   e.stopPropagation();
                   item.onClick();
                   onToggle(null);
                 }}
-                className={`w-full px-4 py-3 text-left text-sm transition-colors ${item.className ?? "hover:bg-zinc-50 text-zinc-700"}`}
+                className={`w-full px-4 py-3 text-left text-sm transition-colors cursor-pointer ${
+                  item.className ?? "hover:bg-zinc-50 text-zinc-700"
+                }`}
               >
                 {item.label}
               </button>
             ))}
           </div>,
-          document.body,
+          document.body
         )
       : null;
 
@@ -112,12 +115,12 @@ export function TableActionMenu({ rowId, openId, onToggle, items }: TableActionM
           e.stopPropagation();
           onToggle(isOpen ? null : rowId);
         }}
-        className="p-1 hover:bg-zinc-200 rounded transition-colors"
+        className="p-1 hover:bg-zinc-200 rounded transition-colors cursor-pointer"
         aria-label="Row actions"
         aria-expanded={isOpen}
         aria-haspopup="true"
       >
-        <MoreVertIcon />
+        <MoreVertical className="w-5 h-5 text-zinc-600" />
       </button>
 
       {dropdown}

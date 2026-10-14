@@ -4,48 +4,12 @@ import { useState, ReactNode } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
-import { arrowForward, calendar, calendarReturn } from "@/src/assets/icons";
 import DestinationAutocomplete from "../../onboarding/components/DestinationsAutoComplete";
 import { createTripSchema } from "../../onboarding/validators/tripPlan.validator";
 import { editTripSchema } from "../../onboarding/validators/editTrip.validator";
-
-const budgetOptions = [
-  {
-    code: "BUDGET",
-    title: "Budget",
-    description: "For saving money",
-  },
-  {
-    code: "MODERATE",
-    title: "Moderate",
-    description: "Balanced spending",
-  },
-  {
-    code: "PREMIUM",
-    title: "Premium",
-    description: "Comfort-focused",
-  },
-  {
-    code: "LUXURY",
-    title: "Luxury",
-    description: "High-end experiences",
-  },
-] as const;
-
-const tripStyles = [
-  {
-    code: "ADVENTURE",
-    title: "Adventure",
-  },
-  {
-    code: "LEISURE",
-    title: "Leisure",
-  },
-  {
-    code: "CULTURAL",
-    title: "Cultural",
-  },
-] as const;
+import BudgetStyleSelector from "./BudgetStyleSelector";
+import TripStyleSelector from "./TripStyleSelector";
+import { Calendar, CalendarRange, ArrowRight, ArrowLeft } from "lucide-react";
 
 export interface TripPlanFormProps {
   showDestination?: boolean;
@@ -87,8 +51,12 @@ export default function TripPlanForm({
   } = useForm({
     resolver: zodResolver(schema),
     defaultValues: {
-      budgetStyle: initialValues?.budgetStyle ? initialValues.budgetStyle.toUpperCase() : "MODERATE",
-      travelStyleCode: initialValues?.travelStyleCode ? initialValues.travelStyleCode.toUpperCase() : "ADVENTURE",
+      budgetStyle: initialValues?.budgetStyle
+        ? initialValues.budgetStyle.toUpperCase()
+        : "MODERATE",
+      travelStyleCode: initialValues?.travelStyleCode
+        ? initialValues.travelStyleCode.toUpperCase()
+        : "ADVENTURE",
       dateFrom: initialValues?.dateFrom ?? "",
       dateTo: initialValues?.dateTo ?? "",
     },
@@ -123,7 +91,9 @@ export default function TripPlanForm({
                 }}
               />
               {(errors as Record<string, any>).destination && (
-                <p className="text-red-500 text-xs sm:text-sm mt-1">Please select a destination</p>
+                <p className="text-red-500 text-xs sm:text-sm mt-1">
+                  Please select a destination
+                </p>
               )}
             </div>
           </div>
@@ -148,7 +118,7 @@ export default function TripPlanForm({
               }}
             >
               <div className="absolute inset-y-0 left-3 sm:left-4 flex items-center pointer-events-none text-[#3f4944] group-focus-within:text-[#005440] transition-colors z-10">
-                {calendar}
+                <Calendar className="w-4 h-4 sm:w-5 sm:h-5 text-[#3f4944]" />
               </div>
               <input
                 min={today}
@@ -191,7 +161,7 @@ export default function TripPlanForm({
               }}
             >
               <div className="absolute inset-y-0 left-3 sm:left-4 flex items-center pointer-events-none text-[#3f4944] group-focus-within:text-[#005440] transition-colors z-10">
-                {calendarReturn}
+                <CalendarRange className="w-4 h-4 sm:w-5 sm:h-5 text-[#3f4944]" />
               </div>
               <input
                 min={dateFrom || today}
@@ -217,78 +187,27 @@ export default function TripPlanForm({
           </div>
         </div>
 
-        <div className="space-y-1.5 sm:space-y-2">
-          <label className="block text-xs sm:text-sm font-bold text-[#3f4944] uppercase tracking-wider font-headline">
-            Budget Style
-          </label>
-          <div className="grid grid-cols-2 gap-2 sm:gap-3">
-            {budgetOptions.map((budget) => {
-              const active = budgetCategory === budget.code;
-              return (
-                <button
-                  key={budget.code}
-                  type="button"
-                  onClick={() =>
-                    setValue("budgetStyle", budget.code, {
-                      shouldValidate: true,
-                      shouldDirty: true,
-                    })
-                  }
-                  className={`
-                    p-2.5 sm:p-4 rounded-xl border text-left transition-all cursor-pointer active:scale-[0.99]
-                    ${
-                      active
-                        ? "border-[#0f6e56] bg-[#eef8f4] shadow-md"
-                        : "border-[#d9dfdb] bg-white hover:border-[#0f6e56]/40"
-                    }
-                  `}
-                >
-                  <h3
-                    className={`font-bold text-xs sm:text-base ${
-                      active ? "text-[#0f6e56]" : "text-[#181d1a]"
-                    }`}
-                  >
-                    {budget.title}
-                  </h3>
-                  <p className="text-[10px] sm:text-xs text-[#6f7a74] mt-0.5 sm:mt-1">
-                    {budget.description}
-                  </p>
-                </button>
-              );
-            })}
-          </div>
-        </div>
+        {/* Budget Style Radio Cards */}
+        <BudgetStyleSelector
+          value={budgetCategory}
+          onChange={(code) =>
+            setValue("budgetStyle", code, {
+              shouldValidate: true,
+              shouldDirty: true,
+            })
+          }
+        />
 
-        <div className="space-y-1.5 sm:space-y-2">
-          <label className="block text-xs sm:text-sm font-bold text-[#3f4944] uppercase tracking-wider font-headline">
-            Travel Style
-          </label>
-          <div className="flex flex-wrap gap-2 sm:gap-3">
-            {tripStyles.map((s) => {
-              const active = tripStyle === s.code;
-              return (
-                <button
-                  key={s.code}
-                  type="button"
-                  onClick={() =>
-                    setValue("travelStyleCode", s.code, {
-                      shouldValidate: true,
-                      shouldDirty: true,
-                    })
-                  }
-                  className={`px-3.5 sm:px-6 py-1.5 sm:py-2.5 rounded-full border text-xs sm:text-sm font-semibold font-headline transition-all cursor-pointer active:scale-95
-                    ${
-                      active
-                        ? "bg-[#0f6e56] text-white border-[#0f6e56] shadow-md scale-105"
-                        : "bg-[#c9eadb] text-[#4d6b5f] border-[#c9eadb] hover:scale-105"
-                    }`}
-                >
-                  {s.title}
-                </button>
-              );
-            })}
-          </div>
-        </div>
+        {/* Travel Style Selector */}
+        <TripStyleSelector
+          value={tripStyle}
+          onChange={(code) =>
+            setValue("travelStyleCode", code, {
+              shouldValidate: true,
+              shouldDirty: true,
+            })
+          }
+        />
 
         {showNavigation ? (
           <div className="flex flex-wrap items-center justify-between pt-6 sm:pt-8 border-t border-[#bec9c3]/20 gap-3">
@@ -296,18 +215,8 @@ export default function TripPlanForm({
               href="/onboarding/travel-style"
               className="inline-flex items-center gap-1.5 text-[#3f4944] font-bold text-sm hover:text-[#0f6e56] transition-colors px-3 py-2 min-h-[44px]"
             >
-              <svg
-                className="w-5 h-5"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M15 18l-6-6 6-6" />
-              </svg>
-              Back
+              <ArrowLeft className="w-4 h-4" />
+              <span>Back</span>
             </Link>
 
             <div className="flex items-center gap-3 sm:gap-4 ml-auto">
@@ -322,7 +231,9 @@ export default function TripPlanForm({
                 type="submit"
                 disabled={isPending}
                 className={`group h-12 px-4 sm:px-5 rounded-xl font-bold text-white shadow-md transition-all active:scale-95 cursor-pointer disabled:opacity-70 disabled:pointer-events-none flex items-center justify-center gap-2 text-sm sm:text-base ${
-                  isPending ? "bg-[#0f6e56]/70" : "bg-[#0f6e56] hover:bg-[#005440]"
+                  isPending
+                    ? "bg-[#0f6e56]/70"
+                    : "bg-[#0f6e56] hover:bg-[#005440]"
                 }`}
               >
                 {isPending ? (
@@ -331,8 +242,8 @@ export default function TripPlanForm({
                   )
                 ) : (
                   <>
-                    {submitButtonText ?? "Create my plan"}
-                    {arrowForward}
+                    <span>{submitButtonText ?? "Create my plan"}</span>
+                    <ArrowRight className="w-4 h-4" />
                   </>
                 )}
               </button>
@@ -363,14 +274,14 @@ export default function TripPlanForm({
                 }
               `}
             >
-              {isPending
-                ? submitPendingText ?? "Submitting..."
-                : submitButtonText ?? (
-                    <>
-                      Save Changes
-                      {arrowForward}
-                    </>
-                  )}
+              {isPending ? (
+                submitPendingText ?? "Submitting..."
+              ) : (
+                <>
+                  <span>{submitButtonText ?? "Save Changes"}</span>
+                  <ArrowRight className="w-4 h-4" />
+                </>
+              )}
             </button>
           </div>
         )}
