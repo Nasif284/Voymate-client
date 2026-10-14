@@ -38,12 +38,12 @@ Rather than co-locating business logic inside React components, the application 
 ```mermaid
 graph TD
     subgraph View_Layer ["Presentation Layer (React 19 Components & Next.js App Router)"]
-        ROUTER[Next.js 16 App Router / Turbopack]
+        ROUTER["Next.js 16 App Router / Turbopack"]
         ROUTE_USER["(user) Traveler Portal"]
         ROUTE_COMM["(community) Host Console"]
         ROUTE_ADMIN["(admin) Governance Suite"]
         ROUTE_MKTG["(marketing) Public Landing"]
-        UI_COMP[Pure Presentational UI Components]
+        UI_COMP["Pure Presentational UI Components"]
     end
 
     subgraph State_Layer ["State & Invalidation Layer"]
@@ -119,13 +119,13 @@ The platform supports three distinct user domains across a unified codebase. The
 
 ```mermaid
 flowchart TD
-    A[API Request Issued] --> B{HTTP Response Status}
-    B -->|200 OK| C[Return Data to TanStack Query]
-    B -->|401 Unauthorized| D{Is Request Already a Retry?}
-    D -->|Yes| E[Clear Session & Redirect to /login?redirect=pathname]
-    D -->|No| F[Mark _retry = true]
-    F --> G[POST /api/v1/auth/refresh with HttpOnly Cookie]
-    G -->|Refresh Successful| H[Replay Original Failed Request]
+    A["API Request Issued"] --> B{"HTTP Response Status"}
+    B -->|200 OK| C["Return Data to TanStack Query"]
+    B -->|401 Unauthorized| D{"Is Request Already a Retry?"}
+    D -->|Yes| E["Clear Session & Redirect to /login"]
+    D -->|No| F["Mark _retry = true"]
+    F --> G["POST /api/v1/auth/refresh with HttpOnly Cookie"]
+    G -->|Refresh Successful| H["Replay Original Failed Request"]
     G -->|Refresh Failed / Expired| E
     H --> C
 ```
