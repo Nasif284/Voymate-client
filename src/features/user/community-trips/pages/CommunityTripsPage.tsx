@@ -7,7 +7,6 @@ import {
   useUserCommunityBookings,
 } from "../hooks/communityTrip.hooks";
 import CommunityTripCard from "../components/CommunityTripCard";
-import CreateCommunityTripModal from "../components/CreateCommunityTripModal";
 import UserCommunityBookingsList from "../components/UserCommunityBookingsList";
 import {
   Search,
@@ -16,7 +15,6 @@ import {
   ShieldCheck,
   CheckCircle2,
   Users,
-  PlusCircle,
   Ticket,
   Loader2,
 } from "lucide-react";
@@ -33,7 +31,6 @@ export default function CommunityTripsPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<CategoryFilter>("ALL");
   const [priceFilter, setPriceFilter] = useState<"ALL" | "FREE" | "PAID">("ALL");
-  const [openCreateModal, setOpenCreateModal] = useState(false);
 
   const queryParams = useMemo(() => {
     return {
@@ -127,14 +124,6 @@ export default function CommunityTripsPage() {
                   <span>Digital Boarding Passes</span>
                 </span>
               </div>
-
-              <button
-                onClick={() => setOpenCreateModal(true)}
-                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-white text-[#005440] hover:bg-emerald-50 text-xs font-bold transition-all shadow-xs cursor-pointer"
-              >
-                <PlusCircle className="w-3.5 h-3.5 text-[#0F6E56]" />
-                <span>Host an Adventure</span>
-              </button>
             </div>
           </div>
         </div>
@@ -304,14 +293,6 @@ export default function CommunityTripsPage() {
             </div>
           )}
         </>
-      )}
-
-      {/* Host Trip Modal */}
-      {openCreateModal && (
-        <CreateCommunityTripModal
-          isOpen={openCreateModal}
-          onClose={() => setOpenCreateModal(false)}
-        />
       )}
     </div>
   );
