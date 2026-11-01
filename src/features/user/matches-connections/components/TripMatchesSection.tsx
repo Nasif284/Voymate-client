@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { useGetTripMatches, useGetActiveTrip } from "../hooks/matches.hooks";
 import TravelerCard from "./TravelerCard";
-import BuddiesOnTheRoadAlert from "./BuddiesOnTheRoadAlert";
 import { TripMatchData } from "../interfaces/profile-listing.interface";
 import { Luggage, ArrowRight } from "lucide-react";
 
@@ -21,7 +20,6 @@ export default function TripMatchesSection({ tripId }: TripMatchesSectionProps) 
   );
 
   const matches: TripMatchData[] = tripMatchesData?.data?.matches ?? [];
-  const buddiesOnRoad: TripMatchData[] = tripMatchesData?.data?.buddiesOnRoad ?? [];
 
   const hasRightSidebar = !!activeTrip?.data?.name;
   const gridClasses = hasRightSidebar
@@ -70,10 +68,6 @@ export default function TripMatchesSection({ tripId }: TripMatchesSectionProps) 
       </header>
 
       <div className="space-y-6 sm:space-y-8">
-        {buddiesOnRoad.length > 0 && (
-          <BuddiesOnTheRoadAlert buddies={buddiesOnRoad} />
-        )}
-
         <div className={gridClasses}>
           {matches.map((match: TripMatchData) => (
             <TravelerCard
