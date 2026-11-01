@@ -4,7 +4,6 @@ import React from "react";
 import { useCreateTripPlan } from "../hooks/trip.hooks";
 import { CreateTripFormData } from "../../onboarding/validators/tripPlan.validator";
 import TripPlanForm from "./TripPlanForm";
-import { ArrowRight } from "lucide-react";
 
 export default function CreateTrip({ onClose }: Readonly<{ onClose: () => void }>) {
   const tripPlan = useCreateTripPlan();
@@ -37,12 +36,7 @@ export default function CreateTrip({ onClose }: Readonly<{ onClose: () => void }
       showDestination={true}
       onSubmit={onSubmit}
       isPending={tripPlan.isPending}
-      submitButtonText={
-        <>
-          Create my plan &amp; find mates
-          <ArrowRight className="w-4 h-4" />
-        </>
-      }
+      submitButtonText="Create my plan & find mates"
       submitPendingText="Creating trip plan..."
     />
   );

@@ -4,7 +4,6 @@ import React from "react";
 import { useCreateOnboardingTripPlan } from "../hooks/onboarding.hooks";
 import { CreateTripFormData } from "../validators/tripPlan.validator";
 import TripPlanForm from "../../trips/components/TripPlanForm";
-import { ArrowRight } from "lucide-react";
 
 export default function TravelPlanPage() {
   const tripPlan = useCreateOnboardingTripPlan();
@@ -45,12 +44,7 @@ export default function TravelPlanPage() {
           showNavigation={true}
           onSubmit={onSubmit}
           isPending={tripPlan.isPending}
-          submitButtonText={
-            <>
-              Create my plan
-              <ArrowRight className="w-4 h-4" />
-            </>
-          }
+          submitButtonText="Create my plan"
         />
       </div>
 
