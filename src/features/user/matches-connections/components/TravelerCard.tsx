@@ -42,6 +42,11 @@ export default function TravelerCard({
 }: TravelerCardProps) {
   const [showBuddyRequestModal, setShowBuddyRequestModal] = useState(false);
 
+  const effectivePropStatus =
+    propConnectionStatus ?? traveler.connectionStatus;
+  const effectivePropRequestId =
+    requestId ?? traveler.requestId ?? undefined;
+
   const {
     isConnected: hookConnected,
     isRequestReceived: hookReceived,
@@ -49,20 +54,24 @@ export default function TravelerCard({
     existingRequest,
     acceptRequest,
     sendRequest,
-  } = useConnectionStatus(traveler.id);
+  } = useConnectionStatus(traveler.id, {
+    initialStatus: effectivePropStatus,
+    initialRequestId: effectivePropRequestId,
+    initialConnectionId: traveler.connectionId,
+  });
 
   const isConnected =
-    propConnectionStatus === "CONNECTED" || hookConnected;
+    effectivePropStatus === "CONNECTED" || hookConnected;
 
   const isRequestReceived =
     !isConnected &&
-    (propConnectionStatus === "REQUEST_RECEIVED" || hookReceived);
+    (effectivePropStatus === "REQUEST_RECEIVED" || hookReceived);
 
   const isRequestSent =
     !isConnected &&
-    (propConnectionStatus === "REQUEST_SENT" || hookSent);
+    (effectivePropStatus === "REQUEST_SENT" || hookSent);
 
-  const targetRequestId = requestId || existingRequest?.id;
+  const targetRequestId = effectivePropRequestId || existingRequest?.id;
 
   const travelDateRange = dateRange?.from
     ? formatDateRange(dateRange.from, dateRange.to)

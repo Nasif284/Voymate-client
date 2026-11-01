@@ -21,6 +21,9 @@ interface PublicProfileHeroUser {
   state?: string | null;
   country?: string | null;
   createdAt?: Date | string | null;
+  connectionStatus?: "CONNECTED" | "REQUEST_RECEIVED" | "REQUEST_SENT" | "NONE";
+  connectionId?: string | null;
+  requestId?: string | null;
 }
 
 interface PublicProfileHeroProps {
@@ -40,7 +43,11 @@ export default function PublicProfileHero({
     isRequestSent,
     existingRequest,
     acceptRequest,
-  } = useConnectionStatus(user.id);
+  } = useConnectionStatus(user.id, {
+    initialStatus: user.connectionStatus,
+    initialRequestId: user.requestId,
+    initialConnectionId: user.connectionId,
+  });
 
   return (
     <section className="bg-white rounded-3xl border border-[#bec9c3]/20 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] overflow-hidden">

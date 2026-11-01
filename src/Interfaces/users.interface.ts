@@ -1,3 +1,9 @@
+export type UserConnectionStatus =
+  | 'CONNECTED'
+  | 'REQUEST_SENT'
+  | 'REQUEST_RECEIVED'
+  | 'NONE';
+
 export interface UserActiveTrip {
   id: string;
   name: string;
@@ -29,6 +35,9 @@ export interface UserWithDetails {
   matchScore?: number;
   reasons?: string[];
   activeTrip?: UserActiveTrip | null;
+  connectionStatus?: UserConnectionStatus;
+  connectionId?: string | null;
+  requestId?: string | null;
   match?: {
     totalPoints: number;
     reasons: string[];
@@ -46,4 +55,3 @@ export interface NearbyUsersResponse {
   fallbackRegion?: string | null;
   radiusKm?: number;
 }
-

@@ -18,48 +18,89 @@ export type ConnectionState =
   | "REQUEST_SENT"
   | "NONE";
 
-export function useConnectionStatus(targetUserId?: string | null) {
-  const { data: connectionsRes, isLoading: loadingConnections } = useGetConnections();
-  const { data: requestsRes, isLoading: loadingRequests } = useGetAllRequests();
+export interface UseConnectionStatusOptions {
+  initialStatus?: ConnectionState;
+  initialRequestId?: string | null;
+  initialConnectionId?: string | null;
+}
+
+export function useConnectionStatus(
+  targetUserId?: string | null,
+  options?: UseConnectionStatusOptions
+) {
+  const hasServerStatus = options?.initialStatus !== undefined;
+
+  const { data: connectionsRes, isLoading: loadingConnections } =
+    useGetConnections(!hasServerStatus && Boolean(targetUserId));
+  const { data: requestsRes, isLoading: loadingRequests } =
+    useGetAllRequests(!hasServerStatus && Boolean(targetUserId));
 
   const sendRequest = useSendConnectionRequest();
   const acceptRequest = useAcceptRequest();
   const rejectRequest = useRejectRequest();
   const withdrawRequest = useWithdrawRequest();
 
-  const isConnected = useMemo(() => {
+  const fallbackConnected = useMemo(() => {
     if (!targetUserId || !connectionsRes?.data?.connections) return false;
     return connectionsRes.data.connections.some(
-      (conn: Connection) => conn.userId === targetUserId || conn.id === targetUserId
+      (conn: Connection) =>
+        conn.userId === targetUserId || conn.id === targetUserId
     );
   }, [connectionsRes, targetUserId]);
 
-  const existingRequest = useMemo(() => {
+  const fallbackRequest = useMemo(() => {
     if (!targetUserId || !requestsRes?.data?.requests) return undefined;
     return requestsRes.data.requests.find(
-      (req: RequestData) => req.senderId === targetUserId || req.receiverId === targetUserId
+      (req: RequestData) =>
+        req.senderId === targetUserId || req.receiverId === targetUserId
     );
   }, [requestsRes, targetUserId]);
 
-  const isRequestReceived = !isConnected && existingRequest?.senderId === targetUserId;
-  const isRequestSent = !isConnected && existingRequest?.receiverId === targetUserId;
+  const status: ConnectionState = useMemo(() => {
+    if (options?.initialStatus) {
+      return options.initialStatus;
+    }
+    if (fallbackConnected) {
+      return "CONNECTED";
+    }
+    if (fallbackRequest?.senderId === targetUserId) {
+      return "REQUEST_RECEIVED";
+    }
+    if (fallbackRequest?.receiverId === targetUserId) {
+      return "REQUEST_SENT";
+    }
+    return "NONE";
+  }, [options?.initialStatus, fallbackConnected, fallbackRequest, targetUserId]);
 
-  let status: ConnectionState = "NONE";
-  if (isConnected) {
-    status = "CONNECTED";
-  } else if (isRequestReceived) {
-    status = "REQUEST_RECEIVED";
-  } else if (isRequestSent) {
-    status = "REQUEST_SENT";
-  }
+  const isConnected = status === "CONNECTED";
+  const isRequestReceived = status === "REQUEST_RECEIVED";
+  const isRequestSent = status === "REQUEST_SENT";
+
+  const existingRequest: RequestData | undefined = useMemo(() => {
+    if (options?.initialRequestId && targetUserId) {
+      return {
+        id: options.initialRequestId,
+        senderId: isRequestReceived ? targetUserId : "",
+        receiverId: isRequestSent ? targetUserId : "",
+      };
+    }
+    return fallbackRequest;
+  }, [
+    options?.initialRequestId,
+    targetUserId,
+    isRequestReceived,
+    isRequestSent,
+    fallbackRequest,
+  ]);
 
   return {
     isConnected,
     isRequestSent,
     isRequestReceived,
     existingRequest,
+    connectionId: options?.initialConnectionId ?? null,
     status,
-    isLoading: loadingConnections || loadingRequests,
+    isLoading: !hasServerStatus && (loadingConnections || loadingRequests),
     sendRequest,
     acceptRequest,
     rejectRequest,
